@@ -1,4 +1,4 @@
-﻿// ================================================
+// ================================================
 // REFUGE DE LA TENDRESSE - Client App
 // ================================================
 
@@ -716,10 +716,7 @@ window.addEventListener("DOMContentLoaded", function() {
   const cf = document.getElementById("contactForm");
   if (cf) cf.addEventListener("submit", handleContactSubmit);
 
-  // Smooth scroll for anchor links
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener("click", function(e) {
-      const target = document.querySelector(this.getAttribute("href"));
+  
       if (target) { e.preventDefault(); target.scrollIntoView({ behavior:"smooth" }); }
     });
   });
@@ -737,3 +734,53 @@ if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/sw.js").catch(e => console.log("SW error:", e));
 }
 
+
+
+// ================================================
+// GLOBAL NAVIGATION FIX (v2 - clean)
+// ================================================
+(function() {
+  function initNav() {
+    // Handle all anchor links to sections
+    document.body.addEventListener('click', function(e) {
+      var link = e.target.closest('a[href^="#"]');
+      if (!link) return;
+
+      var href = link.getAttribute('href');
+      if (!href || href === '#' || href.length < 2) {
+        e.preventDefault();
+        return;
+      }
+
+      var target = document.querySelector(href);
+      if (!target) return;
+
+      e.preventDefault();
+
+      // Close mobile menu if it's open
+      var mobileMenu = document.getElementById('mobileMenu');
+      if (mobileMenu && mobileMenu.classList.contains('active')) {
+        mobileMenu.classList.remove('active');
+      }
+
+      // Calculate scroll position with navbar offset
+      var navHeight = 75;
+      var elementPosition = target.getBoundingClientRect().top + window.pageYOffset;
+      var offsetPosition = elementPosition - navHeight;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }, true);
+
+    console.log('Navigation initialized');
+  }
+
+  // Try immediately if DOM ready, else wait
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initNav);
+  } else {
+    initNav();
+  }
+})();
