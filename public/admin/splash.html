@@ -35,7 +35,7 @@ body { font-family: 'Poppins', sans-serif; background: #000; overflow: hidden; }
 }
 #splash.hide { opacity: 0; transform: scale(1.05); pointer-events: none; }
 
-/* Rotating auras */
+/* Ambient auras */
 .aura {
   position: absolute;
   width: 800px; height: 800px;
@@ -71,11 +71,11 @@ body { font-family: 'Poppins', sans-serif; background: #000; overflow: hidden; }
   opacity: 0;
   animation: cloud-form 3.5s ease-out 0.8s forwards;
 }
-.cloud-puff-1 { width: 320px; height: 320px; }
-.cloud-puff-2 { width: 260px; height: 260px; animation-delay: 1s; top: 20px; left: 30px; }
-.cloud-puff-3 { width: 230px; height: 230px; animation-delay: 1.2s; top: 40px; right: 20px; }
-.cloud-puff-4 { width: 190px; height: 190px; animation-delay: 1.4s; bottom: 30px; left: 60px; }
-.cloud-puff-5 { width: 170px; height: 170px; animation-delay: 1.5s; bottom: 40px; right: 50px; }
+.cloud-puff-1 { width: 350px; height: 350px; }
+.cloud-puff-2 { width: 280px; height: 280px; animation-delay: 1s; top: 20px; left: 30px; }
+.cloud-puff-3 { width: 250px; height: 250px; animation-delay: 1.2s; top: 40px; right: 20px; }
+.cloud-puff-4 { width: 200px; height: 200px; animation-delay: 1.4s; bottom: 30px; left: 60px; }
+.cloud-puff-5 { width: 180px; height: 180px; animation-delay: 1.5s; bottom: 40px; right: 50px; }
 @keyframes cloud-form {
   0% { opacity: 0; transform: scale(0.3); }
   30% { opacity: 0.8; transform: scale(1.1); }
@@ -100,30 +100,28 @@ body { font-family: 'Poppins', sans-serif; background: #000; overflow: hidden; }
   100% { opacity: 0; transform: scale(0) translate(calc(var(--tx, 20px) * 2), calc(var(--ty, -20px) * 2)); }
 }
 
-/* Dog materializes from cloud */
+/* Dog emoji container */
 .dog-container {
   position: relative;
-  width: 340px;
-  height: 340px;
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transform: scale(0.5);
+  transform: scale(0.3);
   filter: blur(20px);
   animation: dog-materialize 1.5s cubic-bezier(0.4, 0, 0.2, 1) 2s forwards;
   z-index: 5;
 }
 @keyframes dog-materialize {
-  0% { opacity: 0; transform: scale(0.5); filter: blur(20px); }
-  50% { opacity: 0.7; transform: scale(1.05); filter: blur(5px); }
+  0% { opacity: 0; transform: scale(0.3); filter: blur(20px); }
+  50% { opacity: 0.9; transform: scale(1.1); filter: blur(5px); }
   100% { opacity: 1; transform: scale(1); filter: blur(0); }
 }
 
 /* Copper glow behind dog */
 .dog-glow {
   position: absolute;
-  inset: -40px;
+  inset: -60px;
   background: radial-gradient(circle, var(--copper-glow) 0%, transparent 60%);
   border-radius: 50%;
   filter: blur(35px);
@@ -133,64 +131,37 @@ body { font-family: 'Poppins', sans-serif; background: #000; overflow: hidden; }
 }
 @keyframes glow-in { to { opacity: 1; } }
 
-/* Whole face bark bounce */
-.dog-face { transform-origin: center bottom; }
-.dog-container.woofing-1 .dog-face,
-.dog-container.woofing-2 .dog-face {
+/* THE DOG EMOJI - Big and shiny */
+.dog-emoji {
+  font-size: 12rem;
+  line-height: 1;
+  filter:
+    drop-shadow(0 0 30px var(--copper-glow))
+    drop-shadow(0 0 60px var(--copper-glow))
+    drop-shadow(0 15px 25px rgba(0,0,0,0.5));
+  display: inline-block;
+  transform-origin: center bottom;
+}
+
+/* Bark bounce */
+.dog-container.woofing-1 .dog-emoji,
+.dog-container.woofing-2 .dog-emoji {
   animation: bark-bounce 0.5s ease-in-out;
 }
 @keyframes bark-bounce {
-  0%, 100% { transform: scale(1) translateY(0); }
-  30% { transform: scale(1.08) translateY(-8px); }
-  60% { transform: scale(1.02) translateY(-3px); }
+  0%, 100% { transform: scale(1) translateY(0) rotate(0deg); }
+  25% { transform: scale(1.15) translateY(-20px) rotate(-5deg); }
+  50% { transform: scale(1.1) translateY(-10px) rotate(0deg); }
+  75% { transform: scale(1.05) translateY(-5px) rotate(5deg); }
 }
 
-/* Mouth opens on bark */
-.dog-mouth-open { opacity: 0; }
-.dog-mouth-closed { opacity: 1; }
-.dog-container.woofing-1 .dog-mouth-open,
-.dog-container.woofing-2 .dog-mouth-open { animation: mouth-flash 0.5s ease-in-out; }
-.dog-container.woofing-1 .dog-mouth-closed,
-.dog-container.woofing-2 .dog-mouth-closed { animation: mouth-hide 0.5s ease-in-out; }
-@keyframes mouth-flash {
-  0%, 100% { opacity: 0; }
-  30%, 70% { opacity: 1; }
+/* Gentle breathing */
+.dog-container.arrived .dog-emoji {
+  animation: breathe 3s ease-in-out infinite;
 }
-@keyframes mouth-hide {
-  0%, 100% { opacity: 1; }
-  30%, 70% { opacity: 0; }
-}
-
-/* Ear twitch */
-.ear-left, .ear-right {
-  transform-origin: 50% 90%;
-}
-.dog-container.arrived .ear-left {
-  animation: ear-twitch-l 4s ease-in-out infinite;
-}
-.dog-container.arrived .ear-right {
-  animation: ear-twitch-r 4s ease-in-out infinite;
-  animation-delay: 0.5s;
-}
-@keyframes ear-twitch-l {
-  0%, 85%, 100% { transform: rotate(0deg); }
-  90% { transform: rotate(-4deg); }
-  95% { transform: rotate(1deg); }
-}
-@keyframes ear-twitch-r {
-  0%, 85%, 100% { transform: rotate(0deg); }
-  90% { transform: rotate(4deg); }
-  95% { transform: rotate(-1deg); }
-}
-
-/* Eye blink */
-.dog-eye { transform-origin: center; }
-.dog-container.arrived .dog-eye {
-  animation: blink 4s ease-in-out infinite;
-}
-@keyframes blink {
-  0%, 92%, 100% { transform: scaleY(1); }
-  95% { transform: scaleY(0.1); }
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
 }
 
 /* Woof bubbles */
@@ -198,12 +169,12 @@ body { font-family: 'Poppins', sans-serif; background: #000; overflow: hidden; }
   position: absolute;
   background: linear-gradient(135deg, var(--copper) 0%, var(--copper-bright) 100%);
   color: var(--black);
-  padding: 10px 22px;
+  padding: 12px 26px;
   border-radius: 25px 25px 25px 5px;
   font-family: 'Cormorant Garamond', serif;
   font-weight: 700;
   font-style: italic;
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   opacity: 0;
   transform: scale(0);
   box-shadow: 0 8px 30px var(--copper-glow), inset 0 1px 0 var(--copper-shine);
@@ -225,13 +196,13 @@ body { font-family: 'Poppins', sans-serif; background: #000; overflow: hidden; }
 }
 .woof-1 {
   top: 20px;
-  right: -30px;
+  right: -100px;
   animation: woof-pop 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) 3.5s forwards;
 }
 .woof-2 {
   top: -20px;
-  left: -50px;
-  font-size: 1.3rem;
+  left: -120px;
+  font-size: 1.5rem;
   animation: woof-pop 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) 4.5s forwards;
 }
 .woof-2::after {
@@ -414,11 +385,12 @@ body { font-family: 'Poppins', sans-serif; background: #000; overflow: hidden; }
 @media(max-width: 768px) {
   .brand-name { font-size: 1.8rem; letter-spacing: 2px; }
   .brand-subtitle { font-size: 0.65rem; letter-spacing: 5px; }
-  .dog-container { width: 260px; height: 260px; }
+  .dog-emoji { font-size: 8rem; }
   .cloud-stage { width: 350px; height: 300px; }
   .corner { width: 40px; height: 40px; }
-  .woof-bubble { font-size: 1.2rem; padding: 7px 16px; }
-  .woof-2 { font-size: 1rem; }
+  .woof-bubble { font-size: 1.3rem; padding: 8px 18px; }
+  .woof-2 { font-size: 1rem; left: -80px; }
+  .woof-1 { right: -70px; }
 }
 </style>
 </head>
@@ -434,7 +406,7 @@ body { font-family: 'Poppins', sans-serif; background: #000; overflow: hidden; }
   <div class="corner corner-bl"></div>
   <div class="corner corner-br"></div>
 
-  <!-- CLOUD + DOG -->
+  <!-- CLOUD + DOG EMOJI -->
   <div class="cloud-stage">
     <div class="cloud-puff cloud-puff-1"></div>
     <div class="cloud-puff cloud-puff-2"></div>
@@ -454,245 +426,8 @@ body { font-family: 'Poppins', sans-serif; background: #000; overflow: hidden; }
     <div class="dog-container" id="dogContainer">
       <div class="dog-glow"></div>
 
-      <!-- CUTE PUPPY FACE - Front view -->
-      <svg class="dog-face" width="340" height="340" viewBox="0 0 340 340" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <!-- Metallic copper for tan parts -->
-          <linearGradient id="metalCopper" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" style="stop-color:#ffb87c"/>
-            <stop offset="30%" style="stop-color:#e89658"/>
-            <stop offset="60%" style="stop-color:#b87333"/>
-            <stop offset="100%" style="stop-color:#8b5a2b"/>
-          </linearGradient>
-          <linearGradient id="copperShadow" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" style="stop-color:#b87333"/>
-            <stop offset="100%" style="stop-color:#5a3a1c"/>
-          </linearGradient>
-          <linearGradient id="copperShine" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#ffb87c;stop-opacity:0.9"/>
-            <stop offset="100%" style="stop-color:#e89658;stop-opacity:0.5"/>
-          </linearGradient>
-
-          <!-- Chrome white for white parts -->
-          <linearGradient id="chromeWhite" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" style="stop-color:#ffffff"/>
-            <stop offset="40%" style="stop-color:#f5f0e5"/>
-            <stop offset="100%" style="stop-color:#c9bea0"/>
-          </linearGradient>
-
-          <!-- Inner ear pink with copper tint -->
-          <linearGradient id="innerEar" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" style="stop-color:#f5b8a0"/>
-            <stop offset="100%" style="stop-color:#d68a70"/>
-          </linearGradient>
-
-          <!-- Dark outline -->
-          <linearGradient id="darkOutline" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" style="stop-color:#3a1f0a"/>
-            <stop offset="100%" style="stop-color:#1a0a02"/>
-          </linearGradient>
-
-          <!-- Nose -->
-          <radialGradient id="noseGrad" cx="30%" cy="30%">
-            <stop offset="0%" style="stop-color:#5a3a1c"/>
-            <stop offset="60%" style="stop-color:#2a1808"/>
-            <stop offset="100%" style="stop-color:#0a0402"/>
-          </radialGradient>
-
-          <!-- Shine -->
-          <radialGradient id="shineSpot" cx="30%" cy="30%">
-            <stop offset="0%" style="stop-color:#fff;stop-opacity:0.9"/>
-            <stop offset="100%" style="stop-color:#fff;stop-opacity:0"/>
-          </radialGradient>
-
-          <!-- Tongue -->
-          <linearGradient id="tongueGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" style="stop-color:#ff8fab"/>
-            <stop offset="100%" style="stop-color:#c9426e"/>
-          </linearGradient>
-        </defs>
-
-        <!-- ===== LEFT EAR (pointy, alert) ===== -->
-        <g class="ear-left">
-          <!-- Ear outer copper -->
-          <path d="M 75 90
-                   Q 45 30 60 20
-                   Q 90 25 115 90
-                   Q 125 130 115 155
-                   Q 90 165 75 145 Z"
-                fill="url(#metalCopper)"
-                stroke="url(#darkOutline)"
-                stroke-width="6"
-                stroke-linejoin="round"/>
-          <!-- Ear inner pink -->
-          <path d="M 85 100
-                   Q 75 60 85 45
-                   Q 100 50 108 105
-                   Q 110 130 100 145
-                   Q 88 145 85 125 Z"
-                fill="url(#innerEar)"
-                stroke="url(#darkOutline)"
-                stroke-width="3"
-                stroke-linejoin="round"/>
-          <!-- Ear highlight -->
-          <ellipse cx="82" cy="65" rx="8" ry="15" fill="url(#shineSpot)" opacity="0.7"/>
-          <!-- Fur detail lines at bottom -->
-          <path d="M 78 148 Q 82 155 75 160" stroke="url(#darkOutline)" stroke-width="3" fill="none" stroke-linecap="round"/>
-          <path d="M 88 152 Q 92 160 85 165" stroke="url(#darkOutline)" stroke-width="2" fill="none" stroke-linecap="round"/>
-        </g>
-
-        <!-- ===== RIGHT EAR (pointy, alert) ===== -->
-        <g class="ear-right">
-          <path d="M 265 90
-                   Q 295 30 280 20
-                   Q 250 25 225 90
-                   Q 215 130 225 155
-                   Q 250 165 265 145 Z"
-                fill="url(#metalCopper)"
-                stroke="url(#darkOutline)"
-                stroke-width="6"
-                stroke-linejoin="round"/>
-          <path d="M 255 100
-                   Q 265 60 255 45
-                   Q 240 50 232 105
-                   Q 230 130 240 145
-                   Q 252 145 255 125 Z"
-                fill="url(#innerEar)"
-                stroke="url(#darkOutline)"
-                stroke-width="3"
-                stroke-linejoin="round"/>
-          <ellipse cx="258" cy="65" rx="8" ry="15" fill="url(#shineSpot)" opacity="0.7"/>
-          <path d="M 262 148 Q 258 155 265 160" stroke="url(#darkOutline)" stroke-width="3" fill="none" stroke-linecap="round"/>
-          <path d="M 252 152 Q 248 160 255 165" stroke="url(#darkOutline)" stroke-width="2" fill="none" stroke-linecap="round"/>
-        </g>
-
-        <!-- ===== HEAD MAIN (copper base) ===== -->
-        <path d="M 80 130
-                 Q 70 200 100 260
-                 Q 130 300 170 305
-                 Q 210 300 240 260
-                 Q 270 200 260 130
-                 Q 240 120 200 118
-                 Q 170 116 140 118
-                 Q 100 120 80 130 Z"
-              fill="url(#metalCopper)"
-              stroke="url(#darkOutline)"
-              stroke-width="6"
-              stroke-linejoin="round"/>
-
-        <!-- ===== WHITE FACE PATCH (center blaze) ===== -->
-        <path d="M 170 118
-                 Q 145 125 138 165
-                 Q 132 210 140 250
-                 Q 155 290 170 300
-                 Q 185 290 200 250
-                 Q 208 210 202 165
-                 Q 195 125 170 118 Z"
-              fill="url(#chromeWhite)"
-              stroke="url(#darkOutline)"
-              stroke-width="5"
-              stroke-linejoin="round"/>
-
-        <!-- Copper shine on cheeks -->
-        <ellipse cx="105" cy="180" rx="20" ry="30" fill="url(#copperShine)" opacity="0.5"/>
-        <ellipse cx="235" cy="180" rx="20" ry="30" fill="url(#copperShine)" opacity="0.5"/>
-
-        <!-- Face metallic shine spots -->
-        <ellipse cx="100" cy="150" rx="15" ry="8" fill="url(#shineSpot)" opacity="0.6"/>
-        <ellipse cx="240" cy="150" rx="15" ry="8" fill="url(#shineSpot)" opacity="0.6"/>
-
-        <!-- ===== FRECKLE DOTS ===== -->
-        <ellipse cx="140" cy="185" rx="5" ry="6" fill="url(#copperShadow)"/>
-        <ellipse cx="200" cy="180" rx="4" ry="5" fill="url(#copperShadow)"/>
-
-        <!-- ===== EYEBROWS (subtle) ===== -->
-        <path d="M 108 175 Q 118 168 128 172" stroke="url(#copperShadow)" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.7"/>
-        <path d="M 212 172 Q 222 168 232 175" stroke="url(#copperShadow)" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.7"/>
-
-        <!-- ===== LEFT EYE (big & cute) ===== -->
-        <g class="dog-eye">
-          <!-- Eye white/outline -->
-          <ellipse cx="120" cy="200" rx="22" ry="26" fill="#fff" stroke="url(#darkOutline)" stroke-width="5"/>
-          <!-- Pupil (large) -->
-          <ellipse cx="123" cy="205" rx="16" ry="20" fill="#1a0a02"/>
-          <!-- Big shine highlight -->
-          <ellipse cx="127" cy="197" rx="6" ry="7" fill="#fff"/>
-          <!-- Small shine -->
-          <circle cx="118" cy="212" r="2" fill="#fff" opacity="0.7"/>
-        </g>
-
-        <!-- ===== RIGHT EYE ===== -->
-        <g class="dog-eye">
-          <ellipse cx="220" cy="200" rx="22" ry="26" fill="#fff" stroke="url(#darkOutline)" stroke-width="5"/>
-          <ellipse cx="217" cy="205" rx="16" ry="20" fill="#1a0a02"/>
-          <ellipse cx="221" cy="197" rx="6" ry="7" fill="#fff"/>
-          <circle cx="212" cy="212" r="2" fill="#fff" opacity="0.7"/>
-        </g>
-
-        <!-- ===== NOSE (heart-shaped, cute) ===== -->
-        <path d="M 145 245
-                 Q 130 245 132 258
-                 Q 138 268 155 268
-                 L 170 275
-                 L 185 268
-                 Q 202 268 208 258
-                 Q 210 245 195 245
-                 Q 180 245 170 258
-                 Q 160 245 145 245 Z"
-              fill="url(#noseGrad)"
-              stroke="url(#darkOutline)"
-              stroke-width="4"
-              stroke-linejoin="round"/>
-        <!-- Nose highlight -->
-        <ellipse cx="150" cy="252" rx="6" ry="3" fill="#fff" opacity="0.4"/>
-        <ellipse cx="155" cy="255" rx="3" ry="2" fill="#fff" opacity="0.7"/>
-
-        <!-- ===== MOUTH (closed - little smile) ===== -->
-        <g class="dog-mouth-closed">
-          <!-- Center line down from nose -->
-          <path d="M 170 275 L 170 288" stroke="url(#darkOutline)" stroke-width="4" stroke-linecap="round"/>
-          <!-- Left smile -->
-          <path d="M 170 288 Q 145 305 128 298" stroke="url(#darkOutline)" stroke-width="5" fill="none" stroke-linecap="round"/>
-          <!-- Right smile -->
-          <path d="M 170 288 Q 195 305 212 298" stroke="url(#darkOutline)" stroke-width="5" fill="none" stroke-linecap="round"/>
-          <!-- Little tongue peek -->
-          <path d="M 158 297 Q 170 305 182 297 Q 180 310 170 310 Q 160 310 158 297 Z"
-                fill="url(#tongueGrad)"
-                stroke="url(#darkOutline)"
-                stroke-width="2.5"
-                stroke-linejoin="round"/>
-          <!-- Tongue center line -->
-          <path d="M 170 300 L 170 308" stroke="#a03555" stroke-width="1.5" stroke-linecap="round"/>
-        </g>
-
-        <!-- ===== MOUTH (open - barking!) ===== -->
-        <g class="dog-mouth-open">
-          <path d="M 170 275 L 170 285" stroke="url(#darkOutline)" stroke-width="4" stroke-linecap="round"/>
-          <!-- Open mouth shape -->
-          <path d="M 140 290
-                   Q 170 320 200 290
-                   Q 200 310 170 315
-                   Q 140 310 140 290 Z"
-                fill="url(#darkOutline)"
-                stroke="url(#darkOutline)"
-                stroke-width="4"
-                stroke-linejoin="round"/>
-          <!-- Tongue inside open mouth -->
-          <path d="M 155 300
-                   Q 170 318 185 300
-                   Q 183 313 170 315
-                   Q 157 313 155 300 Z"
-                fill="url(#tongueGrad)"
-                stroke="#a03555"
-                stroke-width="1.5"
-                stroke-linejoin="round"/>
-        </g>
-
-        <!-- Optional: subtle whisker suggestions -->
-        <path d="M 115 265 Q 105 268 100 275" stroke="url(#copperShadow)" stroke-width="1.5" fill="none" opacity="0.4" stroke-linecap="round"/>
-        <path d="M 225 265 Q 235 268 240 275" stroke="url(#copperShadow)" stroke-width="1.5" fill="none" opacity="0.4" stroke-linecap="round"/>
-
-      </svg>
+      <!-- DOG EMOJI -->
+      <div class="dog-emoji">&#128021;</div>
 
       <!-- Woof bubbles -->
       <div class="woof-bubble woof-1">Woof!</div>
@@ -727,7 +462,10 @@ setTimeout(function() {
 
 setTimeout(function() {
   var dog = document.getElementById('dogContainer');
-  if (dog) dog.classList.add('woofing-1');
+  if (dog) {
+    dog.classList.remove('arrived');
+    dog.classList.add('woofing-1');
+  }
 }, 3500);
 
 setTimeout(function() {
@@ -737,6 +475,14 @@ setTimeout(function() {
     dog.classList.add('woofing-2');
   }
 }, 4500);
+
+setTimeout(function() {
+  var dog = document.getElementById('dogContainer');
+  if (dog) {
+    dog.classList.remove('woofing-2');
+    dog.classList.add('arrived');
+  }
+}, 5100);
 
 function endSplash() {
   document.getElementById('splash').classList.add('hide');
