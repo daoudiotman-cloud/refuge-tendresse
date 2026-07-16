@@ -10,13 +10,16 @@
 
 :root {
   --black: #000000;
-  --off-black: #0a0a0a;
   --charcoal: #141414;
   --copper: #b87333;
   --copper-bright: #e89658;
   --copper-deep: #8b5a2b;
   --copper-shine: #ffb87c;
   --copper-glow: rgba(184, 115, 51, 0.5);
+  --copper-dark: #4a2c15;
+  --chrome-white: #f5f0e5;
+  --chrome-shine: #ffffff;
+  --chrome-shadow: #d4c9b0;
   --warm-white: #faf7f0;
   --light-grey: #c8c8c8;
 }
@@ -44,10 +47,10 @@ body { font-family: 'Poppins', sans-serif; background: #000; overflow: hidden; }
   background: radial-gradient(circle, var(--copper-glow) 0%, transparent 60%);
   border-radius: 50%;
   animation: rotate 30s linear infinite;
-  opacity: 0.4;
+  opacity: 0.35;
   filter: blur(60px);
 }
-.aura-2 { width: 600px; height: 600px; animation: rotate 25s linear infinite reverse; opacity: 0.3; }
+.aura-2 { width: 600px; height: 600px; animation: rotate 25s linear infinite reverse; opacity: 0.25; }
 @keyframes rotate { to { transform: rotate(360deg); } }
 
 /* Floating embers */
@@ -67,7 +70,7 @@ body { font-family: 'Poppins', sans-serif; background: #000; overflow: hidden; }
   100% { opacity: 0; transform: translateY(-20vh) scale(1.5); }
 }
 
-/* Growing copper dot */
+/* Copper dot */
 .copper-dot {
   width: 8px; height: 8px;
   background: radial-gradient(circle, var(--copper-shine) 0%, var(--copper) 40%, var(--copper-deep) 100%);
@@ -82,131 +85,160 @@ body { font-family: 'Poppins', sans-serif; background: #000; overflow: hidden; }
   100% { width: 250px; height: 250px; opacity: 0; }
 }
 
-/* Dust trail behind running dog */
-.dust-trail {
-  position: absolute;
-  top: 50%;
-  right: -50px;
-  transform: translateY(-30px);
-  width: 100vw;
-  height: 3px;
-  opacity: 0;
-  animation: dust-appear 1.5s ease-out 1.5s forwards;
-}
-.dust-particle {
-  position: absolute;
-  width: 4px; height: 4px;
-  background: var(--copper-deep);
-  border-radius: 50%;
-  opacity: 0;
-  filter: blur(1px);
-  box-shadow: 0 0 6px var(--copper);
-}
-@keyframes dust-appear {
-  0% { opacity: 0; }
-  30% { opacity: 1; }
-  100% { opacity: 0; }
-}
-@keyframes dust-fly {
-  0% { opacity: 0.8; transform: translateX(0) translateY(0) scale(1); }
-  100% { opacity: 0; transform: translateX(100px) translateY(-30px) scale(0); }
-}
-
-/* Dog container - runs in from right */
+/* Beagle container - runs in from right */
 .dog-runner {
   position: absolute;
-  right: -300px;
-  top: 45%;
+  right: -350px;
+  top: 42%;
   transform: translateY(-50%);
-  width: 250px;
-  height: 250px;
-  animation: run-in 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1.5s forwards;
+  width: 320px;
+  height: 320px;
+  animation: run-in 2.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1.5s forwards;
   z-index: 10;
 }
 @keyframes run-in {
-  0% { right: -300px; }
-  75% { right: calc(50% - 60px); }
-  85% { right: calc(50% - 90px); }
-  100% { right: calc(50% - 75px); }
+  0% { right: -350px; }
+  75% { right: calc(50% - 100px); }
+  85% { right: calc(50% - 140px); }
+  100% { right: calc(50% - 120px); }
 }
 
-/* Dog bouncing (running motion) */
+/* Bouncing motion while running */
 .dog-body {
-  animation: run-bounce 0.3s ease-in-out infinite;
+  animation: run-bounce 0.25s ease-in-out infinite;
+  transform-origin: center bottom;
 }
 @keyframes run-bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-12px) rotate(-2deg); }
+  50% { transform: translateY(-6px) rotate(0deg); }
+  75% { transform: translateY(-12px) rotate(2deg); }
 }
 
-/* After running - stop bouncing, settle */
+/* Legs galloping */
+.leg-fl, .leg-fr, .leg-bl, .leg-br {
+  transform-origin: top center;
+  animation: gallop 0.25s ease-in-out infinite;
+}
+.leg-fl { animation-delay: 0s; }
+.leg-fr { animation-delay: 0.125s; }
+.leg-bl { animation-delay: 0.125s; }
+.leg-br { animation-delay: 0s; }
+@keyframes gallop {
+  0%, 100% { transform: rotate(-15deg); }
+  50% { transform: rotate(15deg); }
+}
+
+/* Ears flapping while running */
+.ear-l, .ear-r {
+  transform-origin: 50% 20%;
+  animation: ear-flap 0.4s ease-in-out infinite alternate;
+}
+@keyframes ear-flap {
+  from { transform: rotate(-8deg); }
+  to { transform: rotate(8deg); }
+}
+
+/* After arrived - settle down */
 .dog-runner.arrived .dog-body {
-  animation: settle 0.5s ease-out forwards;
+  animation: settle 0.6s ease-out forwards;
 }
 @keyframes settle {
-  0% { transform: translateY(-8px); }
-  50% { transform: translateY(2px); }
-  100% { transform: translateY(0); }
+  0% { transform: translateY(-6px) rotate(0deg); }
+  40% { transform: translateY(5px) rotate(0deg); }
+  70% { transform: translateY(-2px) rotate(0deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+.dog-runner.arrived .leg-fl,
+.dog-runner.arrived .leg-fr,
+.dog-runner.arrived .leg-bl,
+.dog-runner.arrived .leg-br {
+  animation: settle-legs 0.4s ease-out forwards;
+}
+@keyframes settle-legs {
+  to { transform: rotate(0deg); }
+}
+.dog-runner.arrived .ear-l,
+.dog-runner.arrived .ear-r {
+  animation: ears-settle 0.5s ease-out forwards;
+}
+@keyframes ears-settle {
+  0% { transform: rotate(8deg); }
+  50% { transform: rotate(-3deg); }
+  100% { transform: rotate(0deg); }
 }
 
-/* Dog glow (activates when arrived) */
+/* Copper glow when arrived */
 .dog-glow {
   position: absolute;
-  inset: -30px;
+  inset: -40px;
   background: radial-gradient(circle, var(--copper-glow) 0%, transparent 60%);
   border-radius: 50%;
-  filter: blur(30px);
+  filter: blur(35px);
   opacity: 0;
   z-index: -1;
 }
-.dog-runner.arrived .dog-glow {
-  animation: glow-in 1s ease-out forwards;
-}
-@keyframes glow-in {
-  to { opacity: 1; }
-}
+.dog-runner.arrived .dog-glow { animation: glow-in 1s ease-out forwards; }
+@keyframes glow-in { to { opacity: 1; } }
 
-/* Head bark animation */
-.dog-head {
-  transform-origin: 50% 100%;
-}
-.dog-runner.woofing-1 .dog-head { animation: bark 0.4s ease-in-out; }
-.dog-runner.woofing-2 .dog-head { animation: bark 0.4s ease-in-out; }
+/* Head bark motion */
+.dog-head { transform-origin: 30% 100%; }
+.dog-runner.woofing-1 .dog-head { animation: bark 0.5s ease-in-out; }
+.dog-runner.woofing-2 .dog-head { animation: bark 0.5s ease-in-out; }
 @keyframes bark {
   0%, 100% { transform: rotate(0deg) translateY(0); }
-  30% { transform: rotate(-8deg) translateY(-5px); }
-  60% { transform: rotate(-4deg) translateY(-3px); }
+  30% { transform: rotate(-10deg) translateY(-8px); }
+  50% { transform: rotate(-5deg) translateY(-4px); }
+  70% { transform: rotate(-8deg) translateY(-6px); }
 }
 
-/* Tail wag when arrived */
-.dog-tail {
-  transform-origin: 90% 60%;
-}
+/* Tail wag */
+.dog-tail { transform-origin: 85% 60%; }
 .dog-runner.arrived .dog-tail {
-  animation: wag 0.5s ease-in-out infinite alternate;
+  animation: wag 0.35s ease-in-out infinite alternate;
 }
 @keyframes wag {
-  from { transform: rotate(-15deg); }
-  to { transform: rotate(15deg); }
+  from { transform: rotate(-20deg); }
+  to { transform: rotate(20deg); }
+}
+
+/* Blinking eyes */
+.dog-eye { transform-origin: center; }
+.dog-runner.arrived .dog-eye {
+  animation: blink 4s ease-in-out infinite;
+}
+@keyframes blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+
+/* Tongue wiggle */
+.dog-tongue {
+  transform-origin: top center;
+}
+.dog-runner.arrived .dog-tongue {
+  animation: tongue-wiggle 1s ease-in-out infinite alternate;
+}
+@keyframes tongue-wiggle {
+  from { transform: rotate(-3deg) scaleY(1); }
+  to { transform: rotate(3deg) scaleY(1.05); }
 }
 
 /* Woof bubbles */
 .woof-bubble {
   position: absolute;
-  top: 30px;
-  right: -10px;
   background: linear-gradient(135deg, var(--copper) 0%, var(--copper-bright) 100%);
   color: var(--black);
-  padding: 8px 18px;
-  border-radius: 20px 20px 20px 4px;
+  padding: 10px 22px;
+  border-radius: 25px 25px 25px 5px;
   font-family: 'Cormorant Garamond', serif;
   font-weight: 700;
   font-style: italic;
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   opacity: 0;
   transform: scale(0);
-  box-shadow: 0 5px 25px var(--copper-glow), inset 0 1px 0 var(--copper-shine);
-  border: 1px solid var(--copper-shine);
+  box-shadow: 0 8px 30px var(--copper-glow), inset 0 1px 0 var(--copper-shine);
+  border: 2px solid var(--copper-shine);
   white-space: nowrap;
   z-index: 20;
   letter-spacing: 1px;
@@ -214,48 +246,38 @@ body { font-family: 'Poppins', sans-serif; background: #000; overflow: hidden; }
 .woof-bubble::after {
   content: '';
   position: absolute;
-  bottom: -6px;
-  left: 12px;
+  bottom: -8px;
+  left: 15px;
   width: 0; height: 0;
-  border-left: 8px solid var(--copper);
-  border-right: 8px solid transparent;
-  border-top: 8px solid var(--copper);
-  border-bottom: 8px solid transparent;
+  border-left: 10px solid var(--copper);
+  border-right: 10px solid transparent;
+  border-top: 10px solid var(--copper);
+  border-bottom: 10px solid transparent;
 }
 
 .woof-1 {
-  animation: woof-pop 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) 3.5s forwards;
+  top: 20px;
+  right: 20px;
+  animation: woof-pop 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) 3.7s forwards;
 }
 .woof-2 {
-  top: 60px;
-  right: -30px;
-  font-size: 1.2rem;
-  animation: woof-pop 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) 4.5s forwards;
+  top: 55px;
+  right: 0;
+  font-size: 1.3rem;
+  animation: woof-pop 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) 4.7s forwards;
 }
 @keyframes woof-pop {
-  0% { opacity: 0; transform: scale(0) rotate(-10deg); }
-  20% { opacity: 1; transform: scale(1.3) rotate(3deg); }
-  30% { transform: scale(1) rotate(0deg); }
+  0% { opacity: 0; transform: scale(0) rotate(-15deg); }
+  20% { opacity: 1; transform: scale(1.3) rotate(5deg); }
+  35% { transform: scale(1) rotate(0deg); }
   80% { opacity: 1; transform: scale(1) rotate(0deg); }
-  100% { opacity: 0; transform: scale(0.9) translateY(-15px); }
-}
-
-/* Elegant dividers */
-.divider-line {
-  height: 1px;
-  background: linear-gradient(90deg, transparent 0%, var(--copper) 50%, transparent 100%);
-  width: 0;
-  animation: expand-line 1s ease-out 5.5s forwards;
-  margin: 30px 0 25px;
-}
-@keyframes expand-line {
-  to { width: 320px; }
+  100% { opacity: 0; transform: scale(0.9) translateY(-20px); }
 }
 
 /* Brand text */
 .brand-container {
   position: absolute;
-  bottom: 22%;
+  bottom: 20%;
   left: 50%;
   transform: translateX(-50%);
   text-align: center;
@@ -302,7 +324,7 @@ body { font-family: 'Poppins', sans-serif; background: #000; overflow: hidden; }
 .divider-lines {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 12px;
   margin-top: 15px;
   opacity: 0;
   animation: brand-in 0.8s ease-out 6.3s forwards;
@@ -311,7 +333,6 @@ body { font-family: 'Poppins', sans-serif; background: #000; overflow: hidden; }
   content: '';
   width: 60px;
   height: 1px;
-  background: var(--copper-deep);
   align-self: center;
 }
 .divider-lines::before { background: linear-gradient(90deg, transparent, var(--copper-deep)); }
@@ -327,7 +348,7 @@ body { font-family: 'Poppins', sans-serif; background: #000; overflow: hidden; }
 /* Admin tag */
 .admin-tag {
   position: absolute;
-  bottom: 15%;
+  bottom: 13%;
   left: 50%;
   transform: translateX(-50%);
   opacity: 0;
@@ -348,7 +369,6 @@ body { font-family: 'Poppins', sans-serif; background: #000; overflow: hidden; }
   white-space: nowrap;
 }
 
-/* Loading */
 .loading-container {
   position: absolute;
   bottom: 60px;
@@ -384,7 +404,6 @@ body { font-family: 'Poppins', sans-serif; background: #000; overflow: hidden; }
   margin-top: 12px;
 }
 
-/* Skip */
 .skip-btn {
   position: absolute;
   bottom: 25px; right: 30px;
@@ -409,7 +428,6 @@ body { font-family: 'Poppins', sans-serif; background: #000; overflow: hidden; }
   background: rgba(184, 115, 51, 0.1);
 }
 
-/* Corner frames */
 .corner {
   position: absolute;
   width: 60px; height: 60px;
@@ -425,11 +443,10 @@ body { font-family: 'Poppins', sans-serif; background: #000; overflow: hidden; }
 @media(max-width: 768px) {
   .brand-name { font-size: 1.8rem; letter-spacing: 2px; }
   .brand-subtitle { font-size: 0.65rem; letter-spacing: 5px; }
-  .dog-runner { width: 180px; height: 180px; }
+  .dog-runner { width: 220px; height: 220px; }
   .corner { width: 40px; height: 40px; }
-  .corner-tl, .corner-tr { top: 15px; left: 15px; right: 15px; }
-  .corner-bl, .corner-br { bottom: 15px; left: 15px; right: 15px; }
-  .woof-bubble { font-size: 1.1rem; padding: 6px 14px; }
+  .woof-bubble { font-size: 1.2rem; padding: 7px 16px; }
+  .woof-2 { font-size: 1rem; }
 }
 </style>
 </head>
@@ -437,17 +454,14 @@ body { font-family: 'Poppins', sans-serif; background: #000; overflow: hidden; }
 
 <div id="splash">
 
-  <!-- Rotating auras -->
   <div class="aura"></div>
   <div class="aura aura-2"></div>
 
-  <!-- Corner frames -->
   <div class="corner corner-tl"></div>
   <div class="corner corner-tr"></div>
   <div class="corner corner-bl"></div>
   <div class="corner corner-br"></div>
 
-  <!-- Embers -->
   <div class="ember" style="left:5%;animation-delay:0s"></div>
   <div class="ember" style="left:15%;animation-delay:2s"></div>
   <div class="ember" style="left:25%;animation-delay:4s"></div>
@@ -458,161 +472,275 @@ body { font-family: 'Poppins', sans-serif; background: #000; overflow: hidden; }
   <div class="ember" style="left:85%;animation-delay:4.5s"></div>
   <div class="ember" style="left:95%;animation-delay:1.5s"></div>
 
-  <!-- Copper dot -->
   <div class="copper-dot"></div>
 
-  <!-- Running dog with dust trail -->
+  <!-- METALLIC BEAGLE (based on your image) -->
   <div class="dog-runner" id="dogRunner">
     <div class="dog-glow"></div>
 
     <div class="dog-body">
-      <!-- REFINED AFGHAN HOUND / BORZOI SILHOUETTE - the "supermodel" breeds -->
-      <svg width="250" height="200" viewBox="0 0 250 200" xmlns="http://www.w3.org/2000/svg">
+      <svg width="320" height="280" viewBox="0 0 320 280" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <linearGradient id="copperGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <!-- METALLIC COPPER for body -->
+          <linearGradient id="metallicCopper" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" style="stop-color:#ffb87c"/>
-            <stop offset="30%" style="stop-color:#e89658"/>
-            <stop offset="60%" style="stop-color:#b87333"/>
-            <stop offset="100%" style="stop-color:#8b5a2b"/>
+            <stop offset="20%" style="stop-color:#e89658"/>
+            <stop offset="50%" style="stop-color:#b87333"/>
+            <stop offset="80%" style="stop-color:#8b5a2b"/>
+            <stop offset="100%" style="stop-color:#5a3a1c"/>
           </linearGradient>
-          <linearGradient id="copperShine" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#8b5a2b"/>
-            <stop offset="50%" style="stop-color:#ffb87c"/>
-            <stop offset="100%" style="stop-color:#b87333"/>
+          <linearGradient id="copperHighlight" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#ffb87c;stop-opacity:0.8"/>
+            <stop offset="50%" style="stop-color:#fff;stop-opacity:0.6"/>
+            <stop offset="100%" style="stop-color:#ffb87c;stop-opacity:0.4"/>
           </linearGradient>
-          <linearGradient id="copperDark" x1="0%" y1="0%" x2="0%" y2="100%">
+          <linearGradient id="copperShadow" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" style="stop-color:#8b5a2b"/>
             <stop offset="100%" style="stop-color:#4a2c15"/>
           </linearGradient>
-          <radialGradient id="metalShine" cx="30%" cy="30%">
-            <stop offset="0%" style="stop-color:#fff;stop-opacity:0.5"/>
+
+          <!-- CHROME WHITE for belly/face/paws -->
+          <linearGradient id="chromeWhite" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#ffffff"/>
+            <stop offset="30%" style="stop-color:#f5f0e5"/>
+            <stop offset="70%" style="stop-color:#e5dcc5"/>
+            <stop offset="100%" style="stop-color:#c9bea0"/>
+          </linearGradient>
+          <linearGradient id="chromeShine" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#fff;stop-opacity:0.9"/>
+            <stop offset="100%" style="stop-color:#fff;stop-opacity:0.3"/>
+          </linearGradient>
+
+          <!-- DARK COPPER OUTLINE -->
+          <linearGradient id="darkOutline" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#5a3a1c"/>
+            <stop offset="100%" style="stop-color:#2a1808"/>
+          </linearGradient>
+
+          <!-- Nose gradient -->
+          <radialGradient id="noseMetal" cx="30%" cy="30%">
+            <stop offset="0%" style="stop-color:#8b5a2b"/>
+            <stop offset="50%" style="stop-color:#4a2c15"/>
+            <stop offset="100%" style="stop-color:#1a0a02"/>
+          </radialGradient>
+
+          <!-- Shine spots -->
+          <radialGradient id="shineSpot" cx="30%" cy="30%">
+            <stop offset="0%" style="stop-color:#fff;stop-opacity:0.8"/>
             <stop offset="100%" style="stop-color:#fff;stop-opacity:0"/>
           </radialGradient>
+
+          <!-- Tongue metallic -->
+          <linearGradient id="tongueGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#ff8fab"/>
+            <stop offset="100%" style="stop-color:#c9426e"/>
+          </linearGradient>
         </defs>
 
-        <!-- Back legs (further) -->
-        <path d="M 180 130 Q 178 155 175 175 L 185 175 Q 188 155 190 132 Z" fill="url(#copperDark)"/>
-        <path d="M 155 132 Q 152 158 148 178 L 158 178 Q 162 158 165 133 Z" fill="url(#copperDark)"/>
+        <!-- SHADOW under dog -->
+        <ellipse cx="160" cy="255" rx="90" ry="8" fill="#000" opacity="0.4"/>
 
-        <!-- Front legs (further) -->
-        <path d="M 100 130 Q 98 155 95 175 L 105 175 Q 108 155 110 132 Z" fill="url(#copperDark)"/>
-        <path d="M 75 130 Q 72 158 68 178 L 78 178 Q 82 158 85 132 Z" fill="url(#copperDark)"/>
-
-        <!-- Body - long, sleek, elegant (Afghan Hound style) -->
-        <path d="M 65 100
-                 Q 55 88 70 78
-                 L 175 75
-                 Q 200 78 195 100
-                 Q 200 118 190 130
-                 L 70 133
-                 Q 55 125 65 100 Z"
-              fill="url(#copperGrad)"/>
-
-        <!-- Body highlight strip -->
-        <path d="M 75 85 Q 130 82 185 88 Q 130 90 75 92 Z" fill="url(#copperShine)" opacity="0.5"/>
-
-        <!-- Flowing fur underneath body (Afghan-style) -->
-        <path d="M 75 128 Q 100 145 130 138 Q 160 145 185 128" stroke="url(#copperDark)" stroke-width="3" fill="none" stroke-linecap="round"/>
-        <path d="M 85 132 Q 90 145 88 155" stroke="url(#copperDark)" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.7"/>
-        <path d="M 130 138 Q 135 152 130 160" stroke="url(#copperDark)" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.7"/>
-        <path d="M 170 132 Q 172 148 168 155" stroke="url(#copperDark)" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.7"/>
-
-        <!-- Back legs (closer) -->
-        <path d="M 175 132 Q 172 158 168 180 L 180 180 Q 184 158 187 133 Z" fill="url(#copperGrad)"/>
-        <ellipse cx="174" cy="182" rx="8" ry="3" fill="url(#copperDark)"/>
-
-        <path d="M 150 133 Q 147 160 143 182 L 155 182 Q 158 160 162 133 Z" fill="url(#copperGrad)"/>
-        <ellipse cx="149" cy="184" rx="8" ry="3" fill="url(#copperDark)"/>
-
-        <!-- Front legs (closer) - graceful stance -->
-        <path d="M 95 132 Q 92 158 88 180 L 100 180 Q 103 158 107 133 Z" fill="url(#copperGrad)"/>
-        <ellipse cx="94" cy="182" rx="8" ry="3" fill="url(#copperDark)"/>
-
-        <path d="M 70 132 Q 67 160 63 182 L 75 182 Q 78 160 82 133 Z" fill="url(#copperGrad)"/>
-        <ellipse cx="69" cy="184" rx="8" ry="3" fill="url(#copperDark)"/>
-
-        <!-- Elegant plumed tail - curved up (Borzoi style) -->
+        <!-- TAIL - curved, copper with white tip (bottom layer) -->
         <g class="dog-tail">
-          <path d="M 195 90
-                   Q 220 75 228 55
-                   Q 232 45 228 40
-                   Q 222 38 218 45
-                   Q 215 60 208 75
-                   Q 200 85 192 92 Z"
-                fill="url(#copperGrad)"/>
-          <!-- Tail flowing feathering -->
-          <path d="M 220 45 Q 225 50 228 45" stroke="url(#copperShine)" stroke-width="1" fill="none" opacity="0.8"/>
-          <path d="M 215 60 Q 220 65 218 72" stroke="url(#copperShine)" stroke-width="1" fill="none" opacity="0.6"/>
-          <path d="M 210 55 L 214 42" stroke="url(#copperDark)" stroke-width="1" fill="none" opacity="0.5"/>
+          <path d="M 60 155
+                   Q 30 145 15 155
+                   Q 5 165 15 175
+                   Q 25 180 45 175
+                   Q 60 170 75 168 Z"
+                fill="url(#metallicCopper)" stroke="url(#darkOutline)" stroke-width="3" stroke-linejoin="round"/>
+          <!-- White tip -->
+          <path d="M 15 155 Q 5 165 15 175 Q 20 172 22 168 Q 18 162 15 155 Z"
+                fill="url(#chromeWhite)" stroke="url(#darkOutline)" stroke-width="3" stroke-linejoin="round"/>
+          <!-- Tail highlight -->
+          <path d="M 30 155 Q 45 152 60 158" stroke="url(#copperHighlight)" stroke-width="2" fill="none" opacity="0.7"/>
         </g>
 
-        <!-- Neck - long, graceful arch (Afghan) -->
-        <path d="M 55 88
-                 Q 40 68 45 48
-                 Q 50 35 68 32
-                 L 78 82 Z"
-              fill="url(#copperGrad)"/>
+        <!-- BACK LEGS -->
+        <g class="leg-bl">
+          <path d="M 105 195
+                   L 100 240
+                   Q 100 250 115 250
+                   Q 130 250 128 240
+                   L 130 195 Z"
+                fill="url(#metallicCopper)" stroke="url(#darkOutline)" stroke-width="3" stroke-linejoin="round"/>
+          <!-- White paw -->
+          <ellipse cx="115" cy="248" rx="18" ry="8" fill="url(#chromeWhite)" stroke="url(#darkOutline)" stroke-width="3"/>
+          <!-- Toe lines -->
+          <path d="M 108 250 L 108 246" stroke="url(#darkOutline)" stroke-width="1.5"/>
+          <path d="M 115 251 L 115 247" stroke="url(#darkOutline)" stroke-width="1.5"/>
+          <path d="M 122 250 L 122 246" stroke="url(#darkOutline)" stroke-width="1.5"/>
+        </g>
 
-        <!-- Head - refined, elongated (Afghan/Borzoi profile) -->
+        <g class="leg-br">
+          <path d="M 190 195
+                   L 185 240
+                   Q 185 250 200 250
+                   Q 215 250 213 240
+                   L 215 195 Z"
+                fill="url(#metallicCopper)" stroke="url(#darkOutline)" stroke-width="3" stroke-linejoin="round"/>
+          <ellipse cx="200" cy="248" rx="18" ry="8" fill="url(#chromeWhite)" stroke="url(#darkOutline)" stroke-width="3"/>
+          <path d="M 193 250 L 193 246" stroke="url(#darkOutline)" stroke-width="1.5"/>
+          <path d="M 200 251 L 200 247" stroke="url(#darkOutline)" stroke-width="1.5"/>
+          <path d="M 207 250 L 207 246" stroke="url(#darkOutline)" stroke-width="1.5"/>
+        </g>
+
+        <!-- BODY (chubby beagle body) -->
+        <path d="M 75 155
+                 Q 65 130 90 115
+                 Q 130 105 180 108
+                 Q 230 112 235 145
+                 Q 240 180 220 200
+                 Q 190 215 150 213
+                 Q 100 210 75 190
+                 Q 65 175 75 155 Z"
+              fill="url(#metallicCopper)" stroke="url(#darkOutline)" stroke-width="4" stroke-linejoin="round"/>
+
+        <!-- WHITE BELLY -->
+        <path d="M 100 175
+                 Q 130 170 175 175
+                 Q 210 178 215 195
+                 Q 210 210 175 210
+                 Q 130 213 105 205
+                 Q 90 195 100 175 Z"
+              fill="url(#chromeWhite)" stroke="url(#darkOutline)" stroke-width="3.5" stroke-linejoin="round"/>
+
+        <!-- Body shine highlight -->
+        <ellipse cx="150" cy="130" rx="60" ry="12" fill="url(#copperHighlight)" opacity="0.6"/>
+        <!-- Metallic reflection spot -->
+        <ellipse cx="130" cy="140" rx="30" ry="8" fill="url(#shineSpot)"/>
+
+        <!-- FRONT LEGS -->
+        <g class="leg-fl">
+          <path d="M 125 190
+                   L 122 240
+                   Q 122 250 137 250
+                   Q 152 250 150 240
+                   L 150 190 Z"
+                fill="url(#metallicCopper)" stroke="url(#darkOutline)" stroke-width="3" stroke-linejoin="round"/>
+          <ellipse cx="137" cy="248" rx="18" ry="8" fill="url(#chromeWhite)" stroke="url(#darkOutline)" stroke-width="3"/>
+          <path d="M 130 250 L 130 246" stroke="url(#darkOutline)" stroke-width="1.5"/>
+          <path d="M 137 251 L 137 247" stroke="url(#darkOutline)" stroke-width="1.5"/>
+          <path d="M 144 250 L 144 246" stroke="url(#darkOutline)" stroke-width="1.5"/>
+        </g>
+
+        <g class="leg-fr">
+          <path d="M 168 190
+                   L 165 240
+                   Q 165 250 180 250
+                   Q 195 250 193 240
+                   L 193 190 Z"
+                fill="url(#metallicCopper)" stroke="url(#darkOutline)" stroke-width="3" stroke-linejoin="round"/>
+          <ellipse cx="180" cy="248" rx="18" ry="8" fill="url(#chromeWhite)" stroke="url(#darkOutline)" stroke-width="3"/>
+          <path d="M 173 250 L 173 246" stroke="url(#darkOutline)" stroke-width="1.5"/>
+          <path d="M 180 251 L 180 247" stroke="url(#darkOutline)" stroke-width="1.5"/>
+          <path d="M 187 250 L 187 246" stroke="url(#darkOutline)" stroke-width="1.5"/>
+        </g>
+
+        <!-- LEFT EAR (further, behind head) -->
+        <g class="ear-l">
+          <path d="M 195 75
+                   Q 175 65 172 85
+                   Q 172 115 180 140
+                   Q 190 150 200 145
+                   Q 210 130 208 100
+                   Q 208 80 195 75 Z"
+                fill="url(#metallicCopper)" stroke="url(#darkOutline)" stroke-width="3.5" stroke-linejoin="round"/>
+          <!-- Inner ear shadow -->
+          <path d="M 190 90 Q 188 115 195 135" stroke="url(#copperShadow)" stroke-width="2" fill="none" opacity="0.6"/>
+        </g>
+
+        <!-- HEAD -->
         <g class="dog-head">
-          <!-- Skull -->
-          <ellipse cx="55" cy="42" rx="18" ry="14" fill="url(#copperGrad)" transform="rotate(-20 55 42)"/>
+          <!-- Head main shape -->
+          <path d="M 195 75
+                   Q 245 70 265 90
+                   Q 280 110 275 135
+                   Q 268 155 245 158
+                   Q 220 158 205 150
+                   Q 190 130 190 105
+                   Q 190 85 195 75 Z"
+                fill="url(#metallicCopper)" stroke="url(#darkOutline)" stroke-width="4" stroke-linejoin="round"/>
 
-          <!-- Long snout -->
-          <path d="M 28 48
-                   Q 15 50 12 55
-                   Q 10 60 15 62
-                   L 35 62
-                   Q 42 58 42 52 Z"
-                fill="url(#copperGrad)"/>
+          <!-- White face patch -->
+          <path d="M 240 90
+                   Q 265 92 275 110
+                   Q 278 130 265 148
+                   Q 250 155 235 148
+                   Q 225 130 232 108
+                   Q 235 95 240 90 Z"
+                fill="url(#chromeWhite)" stroke="url(#darkOutline)" stroke-width="3" stroke-linejoin="round"/>
 
-          <!-- Head highlight -->
-          <ellipse cx="52" cy="36" rx="10" ry="5" fill="url(#copperShine)" opacity="0.5" transform="rotate(-20 52 36)"/>
+          <!-- Head shine -->
+          <ellipse cx="220" cy="95" rx="18" ry="6" fill="url(#copperHighlight)" opacity="0.7"/>
 
-          <!-- Long flowing ears (Afghan Hound signature) -->
-          <path d="M 62 32
-                   Q 55 20 60 12
-                   Q 68 8 72 20
-                   Q 74 35 68 50
-                   Q 62 45 58 38 Z"
-                fill="url(#copperDark)"/>
-          <path d="M 63 25 Q 65 20 68 22" stroke="url(#copperGrad)" stroke-width="0.8" fill="none" opacity="0.7"/>
-          <!-- Ear feathering -->
-          <path d="M 66 48 Q 68 55 65 62" stroke="url(#copperDark)" stroke-width="1.5" fill="none" opacity="0.7"/>
+          <!-- SNOUT -->
+          <path d="M 258 118
+                   Q 285 118 290 130
+                   Q 292 145 275 148
+                   Q 265 148 258 140
+                   Q 252 128 258 118 Z"
+                fill="url(#chromeWhite)" stroke="url(#darkOutline)" stroke-width="3" stroke-linejoin="round"/>
 
-          <!-- Second ear (further) -->
-          <path d="M 55 28
-                   Q 48 18 52 10
-                   Q 60 7 62 18
-                   Q 63 30 58 42 Z"
-                fill="url(#copperDark)" opacity="0.7"/>
+          <!-- NOSE -->
+          <ellipse cx="285" cy="128" rx="10" ry="8" fill="url(#noseMetal)" stroke="url(#darkOutline)" stroke-width="2"/>
+          <!-- Nose highlight -->
+          <ellipse cx="282" cy="125" rx="3" ry="2" fill="#fff" opacity="0.7"/>
 
-          <!-- Almond eye - refined, alert -->
-          <ellipse cx="45" cy="45" rx="3" ry="2" fill="#1a1a1a" transform="rotate(-15 45 45)"/>
-          <circle cx="44" cy="44" r="0.5" fill="#fff" opacity="0.8"/>
+          <!-- MOUTH curve -->
+          <path d="M 270 140 Q 275 148 265 150" stroke="url(#darkOutline)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <path d="M 265 150 Q 260 152 258 145" stroke="url(#darkOutline)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
 
-          <!-- Nose - refined -->
-          <ellipse cx="14" cy="57" rx="3" ry="2.5" fill="#1a1a1a"/>
-          <circle cx="13" cy="56" r="0.6" fill="#fff" opacity="0.5"/>
+          <!-- TONGUE -->
+          <g class="dog-tongue">
+            <path d="M 262 148
+                     Q 258 165 262 175
+                     Q 268 180 275 175
+                     Q 280 165 275 150
+                     Q 268 145 262 148 Z"
+                  fill="url(#tongueGrad)" stroke="url(#darkOutline)" stroke-width="2" stroke-linejoin="round"/>
+            <!-- Tongue center line -->
+            <path d="M 268 152 L 268 172" stroke="#a03555" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <!-- Tongue shine -->
+            <ellipse cx="266" cy="158" rx="2" ry="4" fill="#fff" opacity="0.5"/>
+          </g>
 
-          <!-- Subtle mouth -->
-          <path d="M 16 62 Q 25 64 34 62" stroke="#4a2c15" stroke-width="0.8" fill="none" stroke-linecap="round"/>
+          <!-- LEFT EYE (further) -->
+          <g class="dog-eye">
+            <ellipse cx="222" cy="108" rx="7" ry="8" fill="#fff" stroke="url(#darkOutline)" stroke-width="2"/>
+            <ellipse cx="224" cy="110" rx="3.5" ry="4.5" fill="#1a0a02"/>
+            <circle cx="225" cy="108" r="1.2" fill="#fff"/>
+          </g>
 
-          <!-- Under-jaw line -->
-          <path d="M 16 62 Q 22 66 32 65" stroke="url(#copperDark)" stroke-width="0.5" fill="none" opacity="0.7"/>
+          <!-- RIGHT EYE (closer) -->
+          <g class="dog-eye">
+            <ellipse cx="255" cy="105" rx="8" ry="9" fill="#fff" stroke="url(#darkOutline)" stroke-width="2"/>
+            <ellipse cx="258" cy="108" rx="4" ry="5" fill="#1a0a02"/>
+            <circle cx="259" cy="105" r="1.5" fill="#fff"/>
+          </g>
+
+          <!-- Eyebrow accents -->
+          <path d="M 217 98 Q 222 94 228 97" stroke="url(#copperShadow)" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <path d="M 248 95 Q 255 91 262 94" stroke="url(#copperShadow)" stroke-width="2" fill="none" stroke-linecap="round"/>
         </g>
 
-        <!-- Elegant collar -->
-        <ellipse cx="65" cy="80" rx="18" ry="4" fill="none" stroke="url(#copperDark)" stroke-width="2"/>
-        <ellipse cx="65" cy="80" rx="18" ry="4" fill="none" stroke="url(#copperShine)" stroke-width="0.5" opacity="0.6"/>
-        <!-- Collar tag -->
-        <circle cx="65" cy="86" r="5" fill="url(#copperGrad)" stroke="#4a2c15" stroke-width="0.5"/>
-        <circle cx="63.5" cy="84" r="1.5" fill="url(#copperShine)" opacity="0.9"/>
-        <text x="65" y="88.5" font-size="4" fill="#4a2c15" font-weight="bold" text-anchor="middle" font-family="serif">R</text>
+        <!-- RIGHT EAR (closer, in front) -->
+        <g class="ear-r">
+          <path d="M 240 78
+                   Q 235 90 230 130
+                   Q 232 155 250 158
+                   Q 265 152 265 130
+                   Q 262 100 255 82
+                   Q 248 75 240 78 Z"
+                fill="url(#metallicCopper)" stroke="url(#darkOutline)" stroke-width="3.5" stroke-linejoin="round"/>
+          <!-- Inner ear highlight -->
+          <path d="M 245 90 Q 248 115 245 140" stroke="url(#copperHighlight)" stroke-width="1.5" fill="none" opacity="0.5"/>
+          <!-- Inner ear shadow -->
+          <path d="M 253 90 Q 258 115 253 140" stroke="url(#copperShadow)" stroke-width="2" fill="none" opacity="0.5"/>
+        </g>
 
-        <!-- Body shine spots for metallic effect -->
-        <ellipse cx="110" cy="95" rx="25" ry="8" fill="url(#metalShine)"/>
-        <ellipse cx="165" cy="92" rx="18" ry="6" fill="url(#metalShine)"/>
+        <!-- Extra metallic highlights on body -->
+        <ellipse cx="100" cy="145" rx="12" ry="4" fill="url(#shineSpot)"/>
+        <ellipse cx="200" cy="135" rx="15" ry="5" fill="url(#shineSpot)"/>
       </svg>
     </div>
 
@@ -628,33 +756,28 @@ body { font-family: 'Poppins', sans-serif; background: #000; overflow: hidden; }
     <div class="divider-lines"><div class="divider-lines-dot"></div></div>
   </div>
 
-  <!-- Admin tag -->
   <div class="admin-tag">
     <span>Bienvenue &middot; Session Securisee</span>
   </div>
 
-  <!-- Loading -->
   <div class="loading-container">
     <div class="loading-bar"></div>
     <div class="loading-text">Chargement</div>
   </div>
 
-  <!-- Skip -->
   <button class="skip-btn" onclick="endSplash()">Passer</button>
 </div>
 
 <script>
-// Trigger "arrived" state when dog stops running (at 3.5s)
 setTimeout(function() {
   var runner = document.getElementById('dogRunner');
   if (runner) runner.classList.add('arrived');
 }, 3500);
 
-// Trigger woof animations
 setTimeout(function() {
   var runner = document.getElementById('dogRunner');
   if (runner) runner.classList.add('woofing-1');
-}, 3600);
+}, 3700);
 
 setTimeout(function() {
   var runner = document.getElementById('dogRunner');
@@ -662,7 +785,7 @@ setTimeout(function() {
     runner.classList.remove('woofing-1');
     runner.classList.add('woofing-2');
   }
-}, 4600);
+}, 4700);
 
 function endSplash() {
   document.getElementById('splash').classList.add('hide');
@@ -675,7 +798,6 @@ function endSplash() {
   }, 800);
 }
 
-// Auto-end after 8 seconds
 setTimeout(function() { endSplash(); }, 8000);
 </script>
 
