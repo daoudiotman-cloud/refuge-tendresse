@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin - Refuge de la Tendresse</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/admin/admin.css?v=4">
+<style>
+/* Splash overlay inside admin */
+#splashOverlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 99999;
+  background: #0b3d2e;
+  display: none;
+  transition: opacity 0.6s ease;
+}
+#splashOverlay.active { display: block; }
+#splashOverlay.fade-out { opacity: 0; pointer-events: none; }
+#splashOverlay iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+</style>
+</head>
+<body>
+
+<!-- SPLASH OVERLAY (shown after login) -->
+<div id="splashOverlay">
+  <iframe id="splashFrame" src="about:blank"></iframe>
+</div>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-box">
+    <div class="login-icon">&#128062;</div>
+    <h1>Refuge de la Tendresse</h1>
+    <p class="login-subtitle">Espace Administrateur</p>
+    <form onsubmit="handleLogin(event)">
+      <div class="form-group"><label>Utilisateur</label><input type="text" id="username" required></div>
+      <div class="form-group"><label>Mot de passe</label><input type="password" id="password" required></div>
+      <button type="submit" class="btn-login">Connexion &#128274;</button>
+      <p id="loginError" class="login-error"></p>
+    </form>
+    <div class="login-hint"><strong>D&#233;mo:</strong> admin / refuge2024</div>
+  </div>
+</div>
+
+<!-- ADMIN APP (hidden until splash ends) -->
+<div id="app" class="app" style="display:none;">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="brand-icon">&#128062;</div>
+      <div><div class="brand-title">Refuge</div><div class="brand-subtitle">Admin Panel</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-item active" data-view="dashboard"><span class="nav-icon">&#128202;</span><span>Tableau de bord</span></div>
+      <div class="nav-item" data-view="reservations"><span class="nav-icon">&#128203;</span><span>R&#233;servations</span><span class="nav-badge" id="pendingBadge">0</span></div>
+      <div class="nav-item" data-view="calendar"><span class="nav-icon">&#128197;</span><span>Calendrier</span></div>
+      <div class="nav-item" data-view="rooms"><span class="nav-icon">&#127968;</span><span>Chambres</span></div>
+      <div class="nav-item" data-view="services"><span class="nav-icon">&#9881;</span><span>Services</span></div>
+      <div class="nav-item" data-view="clients"><span class="nav-icon">&#128101;</span><span>Clients</span></div>
+      <div class="nav-item" data-view="pets"><span class="nav-icon">&#128054;</span><span>Animaux</span></div>
+      <div class="nav-item" data-view="finances"><span class="nav-icon">&#128176;</span><span>Finances</span></div>
+      <div class="nav-item" data-view="settings"><span class="nav-icon">&#9881;</span><span>Param&#232;tres</span></div>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="btn-logout" onclick="handleLogout()">&#128682; D&#233;connexion</button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="top-bar">
+      <button class="menu-toggle" onclick="toggleSidebar()">&#9776;</button>
+      <h1 id="pageTitle">Tableau de bord</h1>
+      <div class="top-actions">
+        <button class="btn-icon" onclick="loadAllData()" title="Rafra&#238;chir">&#128260;</button>
+        <div class="user-badge"><div class="user-avatar">&#128100;</div><span>Admin</span></div>
+      </div>
+    </header>
+    <div class="content" id="content"></div>
+  </main>
+</div>
+
+<div class="modal-overlay" id="modalOverlay"><div class="modal" id="modalContent"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================
+// SPLASH CONTROLLER
+// ============================
+function showSplashThenApp() {
+  var overlay = document.getElementById('splashOverlay');
+  var frame = document.getElementById('splashFrame');
+
+  // Show splash overlay
+  overlay.classList.add('active');
+  frame.src = '/admin/splash.html';
+
+  // Hide login
+  document.getElementById('loginScreen').style.display = 'none';
+}
+
+// Called by splash iframe when animation is done
+window.splashComplete = function() {
+  var overlay = document.getElementById('splashOverlay');
+  overlay.classList.add('fade-out');
+
+  setTimeout(function() {
+    overlay.classList.remove('active', 'fade-out');
+    overlay.style.display = 'none';
+    document.getElementById('splashFrame').src = 'about:blank';
+
+    // NOW show the admin app
+    showAdminApp();
+  }, 600);
+};
+
+// Also listen for postMessage fallback
+window.addEventListener('message', function(e) {
+  if (e.data === 'splashDone') {
+    window.splashComplete();
+  }
+});
+
+function showAdminApp() {
+  document.getElementById('app').style.display = 'flex';
+  attachNavListeners();
+  loadAllData().then(function() { loadView('dashboard'); });
+}
+</script>
+
+<script src="/admin/admin.js?v=4"></script>
+</body>
+</html>

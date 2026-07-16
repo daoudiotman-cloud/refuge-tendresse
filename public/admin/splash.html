@@ -1,0 +1,527 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bienvenue - Admin Refuge de la Tendresse</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap');
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --forest: #0b3d2e;
+  --forest-light: #2f6b3f;
+  --gold: #f2c94c;
+  --gold-dark: #d4a623;
+  --cream: #f7f3e8;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+#splash {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(145deg, var(--forest) 0%, #062a1e 50%, var(--forest) 100%);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  overflow: hidden;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+#splash.hide {
+  opacity: 0;
+  transform: scale(1.1);
+  pointer-events: none;
+}
+
+/* Floating particles */
+.particle {
+  position: absolute;
+  width: 6px; height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+  opacity: 0;
+  animation: floatUp 4s ease-in-out infinite;
+}
+@keyframes floatUp {
+  0% { opacity:0; transform: translateY(100vh) scale(0); }
+  20% { opacity:0.6; }
+  80% { opacity:0.3; }
+  100% { opacity:0; transform: translateY(-100vh) scale(1); }
+}
+
+/* Gold dot */
+.gold-dot {
+  width: 12px; height: 12px;
+  background: var(--gold);
+  border-radius: 50%;
+  position: absolute;
+  animation: dotGrow 1.5s ease-out forwards;
+  box-shadow: 0 0 30px var(--gold), 0 0 60px rgba(242,201,76,0.5);
+}
+@keyframes dotGrow {
+  0% { width:12px; height:12px; opacity:1; border-radius:50%; }
+  40% { width:80px; height:80px; opacity:1; border-radius:50%; box-shadow: 0 0 60px var(--gold), 0 0 120px rgba(242,201,76,0.6); }
+  70% { width:120px; height:120px; opacity:1; border-radius:50%; }
+  100% { width:160px; height:160px; opacity:0; border-radius:50%; transform:scale(1.5); }
+}
+
+/* Dog container */
+.dog-container {
+  position: relative;
+  width: 200px; height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0);
+  animation: dogAppear 0.8s ease-out 1.5s forwards;
+}
+@keyframes dogAppear {
+  0% { opacity:0; transform:scale(0) rotate(-20deg); }
+  50% { transform:scale(1.15) rotate(5deg); }
+  70% { transform:scale(0.95) rotate(-2deg); }
+  100% { opacity:1; transform:scale(1) rotate(0deg); }
+}
+
+/* Dog SVG */
+.dog-svg {
+  width: 160px; height: 160px;
+  filter: drop-shadow(0 10px 30px rgba(242,201,76,0.4));
+}
+
+/* Tail wag */
+.dog-tail {
+  transform-origin: 85% 60%;
+  animation: wagTail 0.4s ease-in-out 2.3s infinite alternate;
+}
+@keyframes wagTail {
+  0% { transform: rotate(-15deg); }
+  100% { transform: rotate(15deg); }
+}
+
+/* Eyes blink */
+.dog-eye {
+  animation: blink 3s ease-in-out 2.5s infinite;
+}
+@keyframes blink {
+  0%,90%,100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+
+/* Ear twitch */
+.dog-ear-right {
+  transform-origin: 50% 100%;
+  animation: earTwitch 2s ease-in-out 2.8s infinite;
+}
+@keyframes earTwitch {
+  0%,85%,100% { transform: rotate(0deg); }
+  90% { transform: rotate(-8deg); }
+  95% { transform: rotate(3deg); }
+}
+
+/* Golden glow ring */
+.glow-ring {
+  position: absolute;
+  width: 180px; height: 180px;
+  border: 3px solid var(--gold);
+  border-radius: 50%;
+  opacity: 0;
+  animation: glowPulse 2s ease-in-out 2s infinite;
+}
+@keyframes glowPulse {
+  0% { opacity:0; transform:scale(0.8); }
+  50% { opacity:0.6; transform:scale(1.2); box-shadow: 0 0 30px var(--gold); }
+  100% { opacity:0; transform:scale(1.5); }
+}
+.glow-ring:nth-child(2) { animation-delay: 2.5s; }
+
+/* Woof bubbles */
+.woof-bubble {
+  position: absolute;
+  top: -10px;
+  right: -60px;
+  background: var(--gold);
+  color: var(--forest);
+  padding: 10px 18px;
+  border-radius: 20px 20px 20px 5px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 900;
+  font-size: 1.1rem;
+  opacity: 0;
+  transform: scale(0);
+  animation: woofAppear 0.5s cubic-bezier(0.68,-0.55,0.265,1.55) 2.5s forwards;
+  box-shadow: 0 5px 20px rgba(242,201,76,0.4);
+  white-space: nowrap;
+}
+.woof-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 15px;
+  width: 0; height: 0;
+  border-left: 10px solid var(--gold);
+  border-right: 10px solid transparent;
+  border-top: 10px solid var(--gold);
+  border-bottom: 10px solid transparent;
+}
+@keyframes woofAppear {
+  0% { opacity:0; transform:scale(0); }
+  60% { transform:scale(1.2); }
+  100% { opacity:1; transform:scale(1); }
+}
+
+.woof-bubble-2 {
+  top: 20px;
+  right: -90px;
+  font-size: 0.85rem;
+  padding: 7px 14px;
+  animation-delay: 3s;
+  border-radius: 15px 15px 15px 3px;
+}
+.woof-bubble-2::after {
+  bottom: -6px; left: 10px;
+  border-width: 7px;
+}
+
+.woof-bounce {
+  animation: woofAppear 0.5s cubic-bezier(0.68,-0.55,0.265,1.55) forwards,
+             woofBounce 0.6s ease-in-out 0.5s infinite alternate;
+}
+@keyframes woofBounce {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-5px) scale(1.05); }
+}
+
+/* Welcome text */
+.welcome-text {
+  margin-top: 40px;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: welcomeSlide 1s ease-out 3.5s forwards;
+}
+@keyframes welcomeSlide {
+  0% { opacity:0; transform:translateY(30px); }
+  100% { opacity:1; transform:translateY(0); }
+}
+
+.welcome-line-1 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--cream);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  opacity: 0;
+  animation: fadeInUp 0.8s ease-out 3.5s forwards;
+}
+.welcome-line-2 {
+  font-size: 2.8rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--gold) 0%, #ffd700 30%, var(--gold-dark) 60%, var(--gold) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: fadeInUp 0.8s ease-out 3.8s forwards, shimmer 3s linear 4s infinite;
+  opacity: 0;
+  line-height: 1.2;
+}
+@keyframes fadeInUp {
+  0% { opacity:0; transform:translateY(25px); }
+  100% { opacity:1; transform:translateY(0); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.welcome-tagline {
+  font-size: 0.95rem;
+  color: rgba(247,243,232,0.6);
+  margin-top: 10px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  opacity: 0;
+  animation: fadeInUp 0.8s ease-out 4.2s forwards;
+}
+
+/* Admin greeting */
+.admin-greeting {
+  margin-top: 15px;
+  opacity: 0;
+  animation: fadeInUp 0.8s ease-out 4.5s forwards;
+}
+.admin-greeting span {
+  background: rgba(242,201,76,0.15);
+  border: 1px solid rgba(242,201,76,0.3);
+  color: var(--gold);
+  padding: 8px 20px;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* Paw prints */
+.paw-trail {
+  position: absolute;
+  bottom: 80px;
+  left: 0; right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  opacity: 0;
+  animation: fadeInUp 1s ease-out 4.8s forwards;
+}
+.paw-print {
+  font-size: 1.2rem;
+  color: var(--gold);
+  opacity: 0;
+  animation: pawStep 0.4s ease-out forwards;
+}
+.paw-print:nth-child(1) { animation-delay: 4.9s; }
+.paw-print:nth-child(2) { animation-delay: 5.1s; transform: scaleX(-1); }
+.paw-print:nth-child(3) { animation-delay: 5.3s; }
+.paw-print:nth-child(4) { animation-delay: 5.5s; transform: scaleX(-1); }
+.paw-print:nth-child(5) { animation-delay: 5.7s; }
+@keyframes pawStep {
+  0% { opacity:0; transform:scale(0) translateY(10px); }
+  60% { opacity:1; transform:scale(1.3) translateY(-5px); }
+  100% { opacity:0.5; transform:scale(1) translateY(0); }
+}
+
+/* Loading bar */
+.loading-bar-wrap {
+  position: absolute;
+  bottom: 40px;
+  width: 200px;
+  height: 4px;
+  background: rgba(242,201,76,0.15);
+  border-radius: 4px;
+  overflow: hidden;
+  opacity: 0;
+  animation: fadeInUp 0.5s ease-out 5.3s forwards;
+}
+.loading-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), #ffd700, var(--gold-dark));
+  border-radius: 4px;
+  width: 0%;
+  animation: loadProgress 1.5s ease-in-out 5.5s forwards;
+}
+@keyframes loadProgress {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
+/* Skip button */
+.skip-btn {
+  position: absolute;
+  bottom: 15px;
+  right: 20px;
+  background: none;
+  border: 1px solid rgba(242,201,76,0.3);
+  color: rgba(242,201,76,0.5);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  opacity: 0;
+  animation: fadeInUp 0.5s ease-out 1s forwards;
+}
+.skip-btn:hover {
+  color: var(--gold);
+  border-color: var(--gold);
+  background: rgba(242,201,76,0.1);
+}
+
+@media (max-width: 600px) {
+  .welcome-line-2 { font-size: 1.8rem; }
+  .welcome-line-1 { font-size: 0.85rem; letter-spacing: 2px; }
+  .dog-svg { width: 120px; height: 120px; }
+  .woof-bubble { right: -40px; font-size: 0.9rem; padding: 8px 14px; }
+  .woof-bubble-2 { right: -55px; }
+}
+</style>
+</head>
+<body>
+
+<div id="splash">
+
+  <!-- Floating gold particles -->
+  <div class="particle" style="left:10%;animation-delay:0.5s;width:4px;height:4px"></div>
+  <div class="particle" style="left:20%;animation-delay:1.2s;width:8px;height:8px"></div>
+  <div class="particle" style="left:35%;animation-delay:0.8s;width:5px;height:5px"></div>
+  <div class="particle" style="left:50%;animation-delay:2s;width:6px;height:6px"></div>
+  <div class="particle" style="left:65%;animation-delay:1.5s;width:4px;height:4px"></div>
+  <div class="particle" style="left:75%;animation-delay:0.3s;width:7px;height:7px"></div>
+  <div class="particle" style="left:85%;animation-delay:1.8s;width:5px;height:5px"></div>
+  <div class="particle" style="left:92%;animation-delay:2.5s;width:6px;height:6px"></div>
+
+  <!-- Gold dot -->
+  <div class="gold-dot"></div>
+
+  <!-- Dog container -->
+  <div class="dog-container">
+    <div class="glow-ring"></div>
+    <div class="glow-ring"></div>
+
+    <!-- SVG Golden Dog -->
+    <svg class="dog-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#ffd700"/>
+          <stop offset="50%" style="stop-color:#f2c94c"/>
+          <stop offset="100%" style="stop-color:#d4a623"/>
+        </linearGradient>
+        <linearGradient id="darkGold" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#d4a623"/>
+          <stop offset="100%" style="stop-color:#b8901a"/>
+        </linearGradient>
+        <radialGradient id="noseGrad">
+          <stop offset="0%" style="stop-color:#1a1a1a"/>
+          <stop offset="100%" style="stop-color:#0b3d2e"/>
+        </radialGradient>
+      </defs>
+
+      <!-- Body -->
+      <ellipse cx="100" cy="130" rx="55" ry="40" fill="url(#goldGrad)" />
+
+      <!-- Back legs -->
+      <rect x="55" y="150" width="18" height="35" rx="9" fill="url(#darkGold)" />
+      <rect x="127" y="150" width="18" height="35" rx="9" fill="url(#darkGold)" />
+
+      <!-- Front legs -->
+      <rect x="70" y="148" width="16" height="38" rx="8" fill="url(#goldGrad)" />
+      <rect x="114" y="148" width="16" height="38" rx="8" fill="url(#goldGrad)" />
+
+      <!-- Paws -->
+      <ellipse cx="78" cy="186" rx="10" ry="6" fill="url(#darkGold)" />
+      <ellipse cx="122" cy="186" rx="10" ry="6" fill="url(#darkGold)" />
+      <ellipse cx="64" cy="185" rx="10" ry="6" fill="url(#darkGold)" />
+      <ellipse cx="136" cy="185" rx="10" ry="6" fill="url(#darkGold)" />
+
+      <!-- Tail -->
+      <g class="dog-tail">
+        <path d="M 148 115 Q 175 90 170 65 Q 168 55 160 60 Q 155 65 158 80 Q 160 95 145 110" fill="url(#goldGrad)" stroke="url(#darkGold)" stroke-width="1"/>
+      </g>
+
+      <!-- Head -->
+      <ellipse cx="100" cy="80" rx="40" ry="35" fill="url(#goldGrad)" />
+
+      <!-- Ears -->
+      <ellipse cx="68" cy="55" rx="15" ry="25" fill="url(#darkGold)" transform="rotate(-20 68 55)" />
+      <g class="dog-ear-right">
+        <ellipse cx="132" cy="55" rx="15" ry="25" fill="url(#darkGold)" transform="rotate(20 132 55)" />
+      </g>
+
+      <!-- Inner ears -->
+      <ellipse cx="68" cy="55" rx="9" ry="16" fill="#c49520" transform="rotate(-20 68 55)" />
+      <ellipse cx="132" cy="55" rx="9" ry="16" fill="#c49520" transform="rotate(20 132 55)" />
+
+      <!-- Face plate -->
+      <ellipse cx="100" cy="90" rx="28" ry="20" fill="#fae6a0" />
+
+      <!-- Eyes -->
+      <g class="dog-eye">
+        <ellipse cx="85" cy="75" rx="8" ry="9" fill="white" />
+        <ellipse cx="85" cy="76" rx="5" ry="6" fill="#0b3d2e" />
+        <ellipse cx="83" cy="74" rx="2" ry="2.5" fill="white" />
+      </g>
+      <g class="dog-eye">
+        <ellipse cx="115" cy="75" rx="8" ry="9" fill="white" />
+        <ellipse cx="115" cy="76" rx="5" ry="6" fill="#0b3d2e" />
+        <ellipse cx="113" cy="74" rx="2" ry="2.5" fill="white" />
+      </g>
+
+      <!-- Eyebrows -->
+      <path d="M 76 65 Q 82 60 92 64" stroke="#b8901a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <path d="M 108 64 Q 118 60 124 65" stroke="#b8901a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+      <!-- Nose -->
+      <ellipse cx="100" cy="90" rx="8" ry="6" fill="url(#noseGrad)" />
+      <ellipse cx="98" cy="88" rx="2.5" ry="1.5" fill="#333" opacity="0.3"/>
+
+      <!-- Mouth -->
+      <path d="M 92 96 Q 100 104 108 96" stroke="#b8901a" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <line x1="100" y1="96" x2="100" y2="100" stroke="#b8901a" stroke-width="2" stroke-linecap="round"/>
+
+      <!-- Tongue -->
+      <ellipse cx="104" cy="103" rx="5" ry="7" fill="#ff8fab" opacity="0.9">
+        <animate attributeName="ry" values="7;8;7" dur="1s" begin="2.5s" repeatCount="indefinite"/>
+      </ellipse>
+
+      <!-- Cheek blush -->
+      <ellipse cx="72" cy="88" rx="8" ry="5" fill="#ffb3c6" opacity="0.3" />
+      <ellipse cx="128" cy="88" rx="8" ry="5" fill="#ffb3c6" opacity="0.3" />
+
+      <!-- Collar -->
+      <path d="M 65 108 Q 100 120 135 108" stroke="url(#noseGrad)" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <circle cx="100" cy="116" r="5" fill="#f2c94c" stroke="#0b3d2e" stroke-width="1.5"/>
+      <text x="97" y="119" font-size="5" fill="#0b3d2e" font-weight="bold">R</text>
+    </svg>
+
+    <!-- Woof bubbles -->
+    <div class="woof-bubble woof-bounce" style="animation-delay:2.5s">Woof! &#128062;</div>
+    <div class="woof-bubble woof-bubble-2 woof-bounce" style="animation-delay:3s">Woof Woof! &#128155;</div>
+  </div>
+
+  <!-- Welcome text -->
+  <div class="welcome-text">
+    <div class="welcome-line-1">&#10024; Bienvenue &#10024;</div>
+    <div class="welcome-line-2">Refuge de la Tendresse</div>
+    <div class="welcome-tagline">&#128062; Espace Administration &#128062;</div>
+    <div class="admin-greeting">
+      <span>&#128100; Bonjour, Admin !</span>
+    </div>
+  </div>
+
+  <!-- Paw prints -->
+  <div class="paw-trail">
+    <span class="paw-print">&#128062;</span>
+    <span class="paw-print">&#128062;</span>
+    <span class="paw-print">&#128062;</span>
+    <span class="paw-print">&#128062;</span>
+    <span class="paw-print">&#128062;</span>
+  </div>
+
+  <!-- Loading bar -->
+  <div class="loading-bar-wrap">
+    <div class="loading-bar"></div>
+  </div>
+
+  <!-- Skip -->
+  <button class="skip-btn" onclick="endSplash()">Passer &#9654;</button>
+</div>
+
+<script>
+function endSplash() {
+  document.getElementById('splash').classList.add('hide');
+  setTimeout(function() {
+    // Signal parent admin page that splash is done
+    if (window.parent && window.parent.splashComplete) {
+      window.parent.splashComplete();
+    } else if (window.opener && window.opener.splashComplete) {
+      window.opener.splashComplete();
+    } else {
+      // Fallback: embedded mode via postMessage
+      window.parent.postMessage('splashDone', '*');
+    }
+  }, 800);
+}
+
+// Auto-end after 7.5 seconds
+setTimeout(function() { endSplash(); }, 7500);
+</script>
+
+</body>
+</html>

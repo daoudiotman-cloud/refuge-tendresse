@@ -1,0 +1,481 @@
+﻿<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Refuge de la Tendresse - Pet Hotel Premium</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=20260716064205">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0b3d2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Refuge Tendresse">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+</head>
+<body>
+<script>
+// Show splash only once per session
+if (!sessionStorage.getItem('splashSeen') && !window.location.search.includes('nosplash')) {
+  sessionStorage.setItem('splashSeen', '1');
+  window.location.href = '/splash.html';
+}
+</script>
+
+<div class="lang-bar">
+  <button class="lang-btn active" onclick="setLang('fr')" id="btn-fr">🇫🇷 Français</button>
+  <button class="lang-btn" onclick="setLang('en')" id="btn-en">🇬🇧 English</button>
+  
+</div>
+
+<nav class="navbar">
+  <div class="nav-brand">
+    <div class="brand-icon">🐾</div>
+    <span class="brand-name" data-i18n="brand">Refuge de la Tendresse</span>
+  </div>
+  <div class="nav-links">
+    <a href="#home" data-i18n="nav_home">Accueil</a>
+    <a href="#services" data-i18n="nav_services">Services</a>
+    <a href="#rooms" data-i18n="nav_rooms">Chambres</a>
+    <a href="#training" data-i18n="nav_training">Formation</a>
+    <a href="#about" data-i18n="nav_about">À propos</a>
+    <a href="#testimonials" data-i18n="nav_testimonials">Avis</a>
+    <a href="#contact" data-i18n="nav_contact">Contact</a>
+  </div>
+  <div id="authLinks" class="nav-auth"></div><button class="nav-toggle" onclick="toggleMenu()">☰</button>
+</nav>
+
+<section id="home" class="hero">
+  <div class="hero-shapes">
+    <div class="shape">🐾</div>
+    <div class="shape">🦴</div>
+    <div class="shape">🐕</div>
+    <div class="shape">🐱</div>
+    <div class="shape">❤️</div>
+    <div class="shape">⭐</div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">✨ <span data-i18n="hero_badge">Élu meilleur pet hotel 2024</span></div>
+    <h1><span data-i18n="hero_title1">Un paradis pour</span><br><span class="accent" data-i18n="hero_title2">vos compagnons</span></h1>
+    <p class="hero-subtitle" data-i18n="hero_subtitle">Amour, luxe et soins d'exception 24h/24</p>
+    <p class="hero-desc" data-i18n="hero_desc">Offrez à votre animal une expérience inoubliable avec nos services premium: hébergement de luxe, toilettage, formation, soins vétérinaires et bien plus encore.</p>
+    <div class="hero-buttons">
+      <a href="#contact" class="btn btn-primary" data-i18n="hero_book">🎉 Réserver maintenant</a>
+      <a href="#services" class="btn btn-secondary" data-i18n="hero_discover">Découvrir</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-icon">😊</span><span class="stat-number">2500+</span><span class="stat-label" data-i18n="stat_happy">Animaux heureux</span></div>
+      <div class="stat"><span class="stat-icon">🏆</span><span class="stat-number">10+</span><span class="stat-label" data-i18n="stat_years">Ans d'expérience</span></div>
+      <div class="stat"><span class="stat-icon">⏰</span><span class="stat-number">24/7</span><span class="stat-label" data-i18n="stat_care">Soins continus</span></div>
+      <div class="stat"><span class="stat-icon">⭐</span><span class="stat-number">4.9</span><span class="stat-label" data-i18n="stat_rating">Note clients</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="services" class="section services">
+  <div class="container">
+    <div class="text-center">
+      <span class="section-badge" data-i18n="services_badge">Nos Services</span>
+      <h2 class="section-title"><span data-i18n="services_title1">Tout ce dont ils ont</span> <span class="accent" data-i18n="services_title2">besoin</span></h2>
+      <p class="section-subtitle" data-i18n="services_subtitle">Une gamme complète de services professionnels pour le bonheur de votre compagnon</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon-wrapper">🏨</div>
+        <h3 data-i18n="srv1_title">Hébergement Premium</h3>
+        <p data-i18n="srv1_desc">Suites confortables et sécurisées pour un séjour de rêve.</p>
+        <ul class="service-features">
+          <li data-i18n="srv1_f1">✓ Chambres climatisées</li>
+          <li data-i18n="srv1_f2">✓ Literie orthopédique</li>
+          <li data-i18n="srv1_f3">✓ Surveillance 24/7</li>
+        </ul>
+        <span class="service-price" data-i18n="srv1_price">Dès 35€/nuit</span>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon-wrapper">🛁</div>
+        <h3 data-i18n="srv2_title">Toilettage & Spa</h3>
+        <p data-i18n="srv2_desc">Traitements de beauté par des toiletteurs certifiés.</p>
+        <ul class="service-features">
+          <li data-i18n="srv2_f1">✓ Bain & séchage</li>
+          <li data-i18n="srv2_f2">✓ Coupe & brushing</li>
+          <li data-i18n="srv2_f3">✓ Manucure & soins dentaires</li>
+        </ul>
+        <span class="service-price" data-i18n="srv2_price">Dès 25€</span>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon-wrapper">🎓</div>
+        <h3 data-i18n="srv3_title">Éducation & Dressage</h3>
+        <p data-i18n="srv3_desc">Cours d'obéissance et sociabilisation avec experts.</p>
+        <ul class="service-features">
+          <li data-i18n="srv3_f1">✓ Cours privés & groupe</li>
+          <li data-i18n="srv3_f2">✓ Comportementaliste</li>
+          <li data-i18n="srv3_f3">✓ Programmes personnalisés</li>
+        </ul>
+        <span class="service-price" data-i18n="srv3_price">Dès 40€/session</span>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon-wrapper">☀️</div>
+        <h3 data-i18n="srv4_title">Garderie de Jour</h3>
+        <p data-i18n="srv4_desc">Journées d'activités et de jeux supervisés.</p>
+        <ul class="service-features">
+          <li data-i18n="srv4_f1">✓ Aires de jeux XXL</li>
+          <li data-i18n="srv4_f2">✓ Socialisation par taille</li>
+          <li data-i18n="srv4_f3">✓ Activités d'enrichissement</li>
+        </ul>
+        <span class="service-price" data-i18n="srv4_price">Dès 20€/jour</span>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon-wrapper">⚕️</div>
+        <h3 data-i18n="srv5_title">Soins Vétérinaires</h3>
+        <p data-i18n="srv5_desc">Équipe médicale disponible en permanence.</p>
+        <ul class="service-features">
+          <li data-i18n="srv5_f1">✓ Vétérinaire 24h/24</li>
+          <li data-i18n="srv5_f2">✓ Administration de médicaments</li>
+          <li data-i18n="srv5_f3">✓ Vaccinations & bilans</li>
+        </ul>
+        <span class="service-price" data-i18n="srv5_price">Sur devis</span>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon-wrapper">📹</div>
+        <h3 data-i18n="srv6_title">Webcam en Direct</h3>
+        <p data-i18n="srv6_desc">Suivez votre animal en temps réel où que vous soyez.</p>
+        <ul class="service-features">
+          <li data-i18n="srv6_f1">✓ Caméras HD 24/7</li>
+          <li data-i18n="srv6_f2">✓ Photos quotidiennes</li>
+          <li data-i18n="srv6_f3">✓ Rapport journalier</li>
+        </ul>
+        <span class="service-price" data-i18n="srv6_price">Gratuit</span>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon-wrapper">🚗</div>
+        <h3 data-i18n="srv7_title">Transport Porte-à-Porte</h3>
+        <p data-i18n="srv7_desc">Service de navette sécurisé pour votre confort.</p>
+        <ul class="service-features">
+          <li data-i18n="srv7_f1">✓ Véhicules climatisés</li>
+          <li data-i18n="srv7_f2">✓ Chauffeurs formés</li>
+          <li data-i18n="srv7_f3">✓ Assurance incluse</li>
+        </ul>
+        <span class="service-price" data-i18n="srv7_price">Dès 15€</span>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon-wrapper">🎂</div>
+        <h3 data-i18n="srv8_title">Événements Spéciaux</h3>
+        <p data-i18n="srv8_desc">Anniversaires, séances photo, gâteaux personnalisés.</p>
+        <ul class="service-features">
+          <li data-i18n="srv8_f1">✓ Fêtes d'anniversaire</li>
+          <li data-i18n="srv8_f2">✓ Séances photo pro</li>
+          <li data-i18n="srv8_f3">✓ Pup-cakes gourmands</li>
+        </ul>
+        <span class="service-price" data-i18n="srv8_price">Dès 30€</span>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon-wrapper">🐾</div>
+        <h3 data-i18n="srv9_title">Soins Seniors & Spéciaux</h3>
+        <p data-i18n="srv9_desc">Attention particulière pour animaux âgés ou spéciaux.</p>
+        <ul class="service-features">
+          <li data-i18n="srv9_f1">✓ Suivi médical renforcé</li>
+          <li data-i18n="srv9_f2">✓ Régimes adaptés</li>
+          <li data-i18n="srv9_f3">✓ Confort maximal</li>
+        </ul>
+        <span class="service-price" data-i18n="srv9_price">Sur devis</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="rooms" class="section rooms">
+  <div class="container">
+    <div class="text-center">
+      <span class="section-badge" data-i18n="rooms_badge">Hébergement</span>
+      <h2 class="section-title"><span data-i18n="rooms_title1">Nos</span> <span class="accent" data-i18n="rooms_title2">Chambres</span></h2>
+      <p class="section-subtitle" data-i18n="rooms_subtitle">Choisissez le confort idéal pour votre compagnon</p>
+    </div>
+    <div class="rooms-grid">
+      <div class="room-card">
+        <div class="room-image room-img-1"><span class="room-badge" data-i18n="badge_popular">Populaire</span></div>
+        <div class="room-info">
+          <h3 data-i18n="room1_title">Suite Confort</h3>
+          <ul>
+            <li data-i18n="room1_f1">Espace de 8m²</li>
+            <li data-i18n="room1_f2">Lit orthopédique</li>
+            <li data-i18n="room1_f3">2 promenades/jour</li>
+            <li data-i18n="room1_f4">Repas premium inclus</li>
+            <li data-i18n="room1_f5">Webcam accessible</li>
+          </ul>
+          <div class="room-price"><span class="price" data-i18n="room1_price">35€</span><span class="per-night" data-i18n="per_night">/ nuit</span></div>
+          <a href="#contact" class="btn btn-primary full-width" data-i18n="btn_reserve">Réserver</a>
+        </div>
+      </div>
+      <div class="room-card featured">
+        <div class="room-image room-img-2"><span class="room-badge gold" data-i18n="badge_luxury">⭐ Luxe</span></div>
+        <div class="room-info">
+          <h3 data-i18n="room2_title">Suite Royale</h3>
+          <ul>
+            <li data-i18n="room2_f1">Espace de 15m²</li>
+            <li data-i18n="room2_f2">Canapé & coussin chauffant</li>
+            <li data-i18n="room2_f3">4 promenades/jour</li>
+            <li data-i18n="room2_f4">Menu gastronomique</li>
+            <li data-i18n="room2_f5">Session spa incluse</li>
+            <li data-i18n="room2_f6">Photos quotidiennes</li>
+          </ul>
+          <div class="room-price"><span class="price" data-i18n="room2_price">55€</span><span class="per-night" data-i18n="per_night">/ nuit</span></div>
+          <a href="#contact" class="btn btn-primary full-width" data-i18n="btn_reserve">Réserver</a>
+        </div>
+      </div>
+      <div class="room-card">
+        <div class="room-image room-img-3"><span class="room-badge cat" data-i18n="badge_cats">🐱 Chats</span></div>
+        <div class="room-info">
+          <h3 data-i18n="room3_title">Nid Félin</h3>
+          <ul>
+            <li data-i18n="room3_f1">Arbre à chat géant</li>
+            <li data-i18n="room3_f2">Hamac & cachettes</li>
+            <li data-i18n="room3_f3">Jouets interactifs</li>
+            <li data-i18n="room3_f4">Herbe à chat fraîche</li>
+            <li data-i18n="room3_f5">Espace multi-niveaux</li>
+          </ul>
+          <div class="room-price"><span class="price" data-i18n="room3_price">30€</span><span class="per-night" data-i18n="per_night">/ nuit</span></div>
+          <a href="#contact" class="btn btn-primary full-width" data-i18n="btn_reserve">Réserver</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="training" class="section training">
+  <div class="container">
+    <div class="text-center">
+      <span class="section-badge" data-i18n="train_badge">Formation</span>
+      <h2 class="section-title"><span data-i18n="train_title1">Programmes</span> <span class="accent" data-i18n="train_title2">d'éducation</span></h2>
+      <p class="section-subtitle" data-i18n="train_subtitle">Des cours adaptés à chaque âge et niveau</p>
+    </div>
+    <div class="training-grid">
+      <div class="training-card">
+        <div class="training-icon">🐶</div>
+        <h4 data-i18n="train1_title">École du Chiot</h4>
+        <p data-i18n="train1_desc">Socialisation dès 2 mois</p>
+      </div>
+      <div class="training-card">
+        <div class="training-icon">🎯</div>
+        <h4 data-i18n="train2_title">Obéissance</h4>
+        <p data-i18n="train2_desc">Commandes de base et avancées</p>
+      </div>
+      <div class="training-card">
+        <div class="training-icon">💫</div>
+        <h4 data-i18n="train3_title">Comportement</h4>
+        <p data-i18n="train3_desc">Résolution de problèmes</p>
+      </div>
+      <div class="training-card">
+        <div class="training-icon">🏅</div>
+        <h4 data-i18n="train4_title">Agility & Sport</h4>
+        <p data-i18n="train4_desc">Activités sportives canines</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about" class="section about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-text">
+        <span class="section-badge" data-i18n="about_badge">À propos</span>
+        <h2 class="section-title left"><span data-i18n="about_title1">Notre</span> <span class="accent" data-i18n="about_title2">Histoire</span></h2>
+        <p data-i18n="about_p1">Fondé en 2014, le <strong>Refuge de la Tendresse</strong> est né d'une passion profonde pour les animaux et d'un désir de créer un lieu où chaque compagnon se sent chez lui.</p>
+        <p data-i18n="about_p2">Notre équipe de professionnels certifiés traite chaque animal avec l'amour et le respect qu'il mérite. Nous croyons que vos animaux sont des membres de votre famille.</p>
+        <div class="about-features">
+          <div class="about-feature"><div class="check">✓</div><span data-i18n="about_f1">Personnel certifié</span></div>
+          <div class="about-feature"><div class="check">✓</div><span data-i18n="about_f2">Installations modernes</span></div>
+          <div class="about-feature"><div class="check">✓</div><span data-i18n="about_f3">Hygiène irréprochable</span></div>
+          <div class="about-feature"><div class="check">✓</div><span data-i18n="about_f4">Disponible 24h/24</span></div>
+          <div class="about-feature"><div class="check">✓</div><span data-i18n="about_f5">Vétérinaire sur site</span></div>
+          <div class="about-feature"><div class="check">✓</div><span data-i18n="about_f6">Assurance incluse</span></div>
+        </div>
+      </div>
+      <div class="about-image-wrap">
+        <div class="decorative-card card-1">
+          <div class="card-icon">⭐</div>
+          <div class="card-info"><strong>4.9/5</strong><span data-i18n="card_reviews">500+ avis</span></div>
+        </div>
+        <div class="decorative-card card-2">
+          <div class="card-icon">❤️</div>
+          <div class="card-info"><strong>2500+</strong><span data-i18n="card_pets">Compagnons heureux</span></div>
+        </div>
+        <div class="about-img-placeholder">
+          <div class="floating-emoji e1">🐕</div>
+          <div class="floating-emoji e2">🐈</div>
+          <div class="floating-emoji e3">🐾</div>
+          <div class="floating-emoji e4">❤️</div>
+          <div class="floating-emoji e5">🦴</div>
+          <div class="about-text-center">
+            <span class="big-paw">🐾</span>
+            <p data-i18n="about_img_title">10+ ans d'amour</p>
+            <span data-i18n="about_img_text">Au service de vos compagnons</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="testimonials" class="section testimonials">
+  <div class="container">
+    <div class="text-center">
+      <span class="section-badge" data-i18n="test_badge">Témoignages</span>
+      <h2 class="section-title"><span data-i18n="test_title1">Ils nous font</span> <span class="accent" data-i18n="test_title2">confiance</span></h2>
+      <p class="section-subtitle" data-i18n="test_subtitle">Les avis de nos clients satisfaits</p>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="quote-icon">"</div>
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+        <p class="testimonial-text" data-i18n="test1_text">Mon chien Max adore cet endroit ! Chaque fois que je le dépose, il court vers le personnel avec joie. Je sais qu'il est entre de bonnes mains.</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">👩</div>
+          <div><strong>Sophie Martin</strong><span data-i18n="test1_pet">Maman de Max 🐕</span></div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="quote-icon">"</div>
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+        <p class="testimonial-text" data-i18n="test2_text">Service exceptionnel ! La caméra en direct m'a permis de voir ma chatte Mimi jouer toute la journée. Personnel adorable et très professionnel.</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">👨</div>
+          <div><strong>Ahmed Benali</strong><span data-i18n="test2_pet">Papa de Mimi 🐱</span></div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="quote-icon">"</div>
+        <div class="stars">⭐⭐⭐⭐⭐</div>
+        <p class="testimonial-text" data-i18n="test3_text">La suite royale est incroyable ! Mon caniche a été traité comme un roi. Toilettage impeccable, nourriture de qualité. Je recommande à 100% !</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">👩</div>
+          <div><strong>Marie Dupont</strong><span data-i18n="test3_pet">Maman de Coco 🐩</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="section contact">
+  <div class="container">
+    <div class="text-center">
+      <span class="section-badge" data-i18n="contact_badge">Contact</span>
+      <h2 class="section-title"><span data-i18n="contact_title1">Réservez</span> <span class="accent" data-i18n="contact_title2">maintenant</span></h2>
+      <p class="section-subtitle" data-i18n="contact_subtitle">Un séjour de rêve pour votre compagnon</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="contact-item">
+          <div class="contact-icon-box">📍</div>
+          <div><strong data-i18n="contact_address_label">Adresse</strong><p data-i18n="contact_address">123 Rue des Animaux, 75001 Paris, France</p></div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon-box">📞</div>
+          <div><strong data-i18n="contact_phone_label">Téléphone</strong><p>+33 1 23 45 67 89</p></div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon-box">✉️</div>
+          <div><strong data-i18n="contact_email_label">Email</strong><p>contact@refuge-tendresse.fr</p></div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon-box">🕐</div>
+          <div><strong data-i18n="contact_hours_label">Horaires</strong><p data-i18n="contact_hours">Lun - Dim: 7h00 - 21h00</p></div>
+        </div>
+        <div class="social-links">
+          <a href="#" class="social-btn">📘</a>
+          <a href="#" class="social-btn">📸</a>
+          <a href="#" class="social-btn">🐦</a>
+          <a href="#" class="social-btn">▶️</a>
+        </div>
+      </div>
+      <form class="contact-form" onsubmit="handleSubmit(event)">
+        <div class="form-row">
+          <div class="form-group"><label data-i18n="form_name">Votre nom</label><input type="text" required></div>
+          <div class="form-group"><label data-i18n="form_email">Votre email</label><input type="email" required></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label data-i18n="form_phone">Téléphone</label><input type="tel"></div>
+          <div class="form-group"><label data-i18n="form_pet_name">Nom de l'animal</label><input type="text"></div>
+        </div>
+        <div class="form-group">
+          <label data-i18n="form_service">Service souhaité</label>
+          <select>
+            <option value="" data-i18n="form_select">-- Choisir un service --</option>
+            <option value="boarding" data-i18n="form_opt1">Hébergement</option>
+            <option value="grooming" data-i18n="form_opt2">Toilettage</option>
+            <option value="training" data-i18n="form_opt3">Formation</option>
+            <option value="daycare" data-i18n="form_opt4">Garderie</option>
+            <option value="transport" data-i18n="form_opt5">Transport</option>
+            <option value="vet" data-i18n="form_opt6">Vétérinaire</option>
+          </select>
+        </div>
+        <div class="form-group"><label data-i18n="form_message">Message</label><textarea rows="4"></textarea></div>
+        <button type="submit" class="btn btn-primary full-width" data-i18n="form_submit">Envoyer la demande 🐾</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h3><span>🐾</span> Refuge de la Tendresse</h3>
+        <p data-i18n="footer_desc">L'endroit où chaque animal est traité comme un membre de la famille. Depuis 2014, nous offrons des soins d'exception à vos compagnons bien-aimés.</p>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="footer_links">Navigation</h4>
+        <a href="#home" data-i18n="nav_home">Accueil</a>
+        <a href="#services" data-i18n="nav_services">Services</a>
+        <a href="#rooms" data-i18n="nav_rooms">Chambres</a>
+        <a href="#training" data-i18n="nav_training">Formation</a>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="footer_services_title">Services</h4>
+        <a href="#services" data-i18n="footer_s1">Hébergement</a>
+        <a href="#services" data-i18n="footer_s2">Toilettage</a>
+        <a href="#services" data-i18n="footer_s3">Éducation</a>
+        <a href="#services" data-i18n="footer_s4">Transport</a>
+      </div>
+      <div class="footer-col">
+        <h4 data-i18n="footer_hours_title">Horaires</h4>
+        <p data-i18n="footer_hours1">Lun - Ven: 7h - 21h</p>
+        <p data-i18n="footer_hours2">Sam - Dim: 8h - 20h</p>
+        <p data-i18n="footer_hours3">Urgences: 24h/24</p>
+      </div>
+    </div>
+    <div class="footer-bottom"><p>© 2024 Refuge de la Tendresse. <span data-i18n="footer_rights">Tous droits réservés.</span> 🐾</p></div>
+  </div>
+</footer>
+
+<div class="mobile-menu" id="mobileMenu">
+  <div id="mobileAuthLinks" class="mobile-auth-links"></div><button class="close-menu" onclick="toggleMenu()">✕</button>
+  <a href="#home" onclick="toggleMenu()" data-i18n="nav_home">Accueil</a>
+  <a href="#services" onclick="toggleMenu()" data-i18n="nav_services">Services</a>
+  <a href="#rooms" onclick="toggleMenu()" data-i18n="nav_rooms">Chambres</a>
+  <a href="#training" onclick="toggleMenu()" data-i18n="nav_training">Formation</a>
+  <a href="#about" onclick="toggleMenu()" data-i18n="nav_about">À propos</a>
+  <a href="#testimonials" onclick="toggleMenu()" data-i18n="nav_testimonials">Avis</a>
+  <a href="#contact" onclick="toggleMenu()" data-i18n="nav_contact">Contact</a>
+</div>
+
+<script src="translations.js?v=20260716064205"></script>
+<script src="app.js?v=20260716064205"></script>
+</body>
+</html>
+
+
+
+
+
+
+
