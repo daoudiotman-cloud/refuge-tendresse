@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260718043506">
+<link rel="stylesheet" href="style.css?v=20260718044234">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#0b3d2e">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -38,7 +38,7 @@ if (!sessionStorage.getItem('splashSeen') && !window.location.search.includes('n
   <div class="nav-links">
     <a href="#home" data-i18n="nav_home">Accueil</a>
     <a href="#services" data-i18n="nav_services">Services</a>
-    <a href="#rooms" data-i18n="nav_rooms">Hebergement</a>
+    
     <a href="#training" data-i18n="nav_training">Formation</a>
     <a href="#about" data-i18n="nav_about">À propos</a>
     <a href="#testimonials" data-i18n="nav_testimonials">Avis</a>
@@ -63,7 +63,7 @@ if (!sessionStorage.getItem('splashSeen') && !window.location.search.includes('n
     <p class="hero-desc" data-i18n="hero_desc">Offrez à votre animal une expérience inoubliable avec nos services premium: hébergement de luxe, toilettage, formation, soins vétérinaires et bien plus encore.</p>
     <div class="hero-buttons">
       <a href="#contact" class="btn btn-primary" data-i18n="hero_book">🎉 Réserver maintenant</a>
-      <a href="#services" class="btn btn-secondary" data-i18n="hero_discover">Découvrir</a>
+      <button class="btn btn-secondary" onclick="goToBooking()">&#127968; Hebergement Premium</button>
     </div>
     <div class="hero-stats">
       <div class="stat"><span class="stat-icon">😊</span><span class="stat-number">2500+</span><span class="stat-label" data-i18n="stat_happy">Animaux heureux</span></div>
@@ -193,63 +193,7 @@ if (!sessionStorage.getItem('splashSeen') && !window.location.search.includes('n
   </div>
 </section>
 
-<section id="rooms" class="section rooms">
-  <div class="container">
-    <div class="text-center">
-      <span class="section-badge" data-i18n="rooms_badge">Hébergement</span>
-      <h2 class="section-title"><span data-i18n="rooms_title1">Nos</span> <span class="accent" data-i18n="rooms_title2">Chambres</span></h2>
-      <p class="section-subtitle" data-i18n="rooms_subtitle">Choisissez le confort idéal pour votre compagnon</p>
-    </div>
-    <div class="rooms-grid">
-      <div class="room-card">
-        <div class="room-image room-img-1"><span class="room-badge" data-i18n="badge_popular">Populaire</span></div>
-        <div class="room-info">
-          <h3 data-i18n="room1_title">Suite Confort</h3>
-          <ul>
-            <li data-i18n="room1_f1">Espace de 8m²</li>
-            <li data-i18n="room1_f2">Lit orthopédique</li>
-            <li data-i18n="room1_f3">2 promenades/jour</li>
-            <li data-i18n="room1_f4">Repas premium inclus</li>
-            <li data-i18n="room1_f5">Webcam accessible</li>
-          </ul>
-          <div class="room-price"><span class="price" data-i18n="room1_price">35€</span><span class="per-night" data-i18n="per_night">/ nuit</span></div>
-          <a href="#contact" class="btn btn-primary full-width" data-i18n="btn_reserve">Réserver</a>
-        </div>
-      </div>
-      <div class="room-card featured">
-        <div class="room-image room-img-2"><span class="room-badge gold" data-i18n="badge_luxury">⭐ Luxe</span></div>
-        <div class="room-info">
-          <h3 data-i18n="room2_title">Suite Royale</h3>
-          <ul>
-            <li data-i18n="room2_f1">Espace de 15m²</li>
-            <li data-i18n="room2_f2">Canapé & coussin chauffant</li>
-            <li data-i18n="room2_f3">4 promenades/jour</li>
-            <li data-i18n="room2_f4">Menu gastronomique</li>
-            <li data-i18n="room2_f5">Session spa incluse</li>
-            <li data-i18n="room2_f6">Photos quotidiennes</li>
-          </ul>
-          <div class="room-price"><span class="price" data-i18n="room2_price">55€</span><span class="per-night" data-i18n="per_night">/ nuit</span></div>
-          <a href="#contact" class="btn btn-primary full-width" data-i18n="btn_reserve">Réserver</a>
-        </div>
-      </div>
-      <div class="room-card">
-        <div class="room-image room-img-3"><span class="room-badge cat" data-i18n="badge_cats">🐱 Chats</span></div>
-        <div class="room-info">
-          <h3 data-i18n="room3_title">Nid Félin</h3>
-          <ul>
-            <li data-i18n="room3_f1">Arbre à chat géant</li>
-            <li data-i18n="room3_f2">Hamac & cachettes</li>
-            <li data-i18n="room3_f3">Jouets interactifs</li>
-            <li data-i18n="room3_f4">Herbe à chat fraîche</li>
-            <li data-i18n="room3_f5">Espace multi-niveaux</li>
-          </ul>
-          <div class="room-price"><span class="price" data-i18n="room3_price">30€</span><span class="per-night" data-i18n="per_night">/ nuit</span></div>
-          <a href="#contact" class="btn btn-primary full-width" data-i18n="btn_reserve">Réserver</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+
 
 <section id="training" class="section training">
   <div class="container">
@@ -436,7 +380,7 @@ if (!sessionStorage.getItem('splashSeen') && !window.location.search.includes('n
         <h4 data-i18n="footer_links">Navigation</h4>
         <a href="#home" data-i18n="nav_home">Accueil</a>
         <a href="#services" data-i18n="nav_services">Services</a>
-        <a href="#rooms" data-i18n="nav_rooms">Hebergement</a>
+        
         <a href="#training" data-i18n="nav_training">Formation</a>
       </div>
       <div class="footer-col">
@@ -461,7 +405,7 @@ if (!sessionStorage.getItem('splashSeen') && !window.location.search.includes('n
   <div id="mobileAuthLinks" class="mobile-auth-links"></div><button class="close-menu" onclick="toggleMenu()">✕</button>
   <a href="#home" onclick="toggleMenu()" data-i18n="nav_home">Accueil</a>
   <a href="#services" onclick="toggleMenu()" data-i18n="nav_services">Services</a>
-  <a href="#rooms" onclick="toggleMenu()" data-i18n="nav_rooms">Hebergement</a>
+  
   <a href="#training" onclick="toggleMenu()" data-i18n="nav_training">Formation</a>
   <a href="#about" onclick="toggleMenu()" data-i18n="nav_about">À propos</a>
   <a href="#testimonials" onclick="toggleMenu()" data-i18n="nav_testimonials">Avis</a>
@@ -469,7 +413,7 @@ if (!sessionStorage.getItem('splashSeen') && !window.location.search.includes('n
 </div>
 
 <script src="translations.js?v=20260716064205"></script>
-<script src="app.js?v=20260718043506"></script>
+<script src="app.js?v=20260718044234"></script>
 </body>
 </html>
 

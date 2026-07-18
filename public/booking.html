@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hebergement Premium - Refuge de la Tendresse</title>
+<link rel="stylesheet" href="/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+.booking-page {
+  min-height: 100vh;
+  background: var(--cream);
+  padding: 90px 0 40px;
+}
+.booking-header {
+  text-align: center;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, var(--green-dark), var(--green));
+  color: var(--gold);
+  margin-bottom: 30px;
+}
+.booking-header h1 {
+  font-size: 2.2rem;
+  margin-bottom: 8px;
+}
+.booking-header p {
+  color: var(--cream);
+  font-size: 1rem;
+  opacity: 0.9;
+}
+.back-btn {
+  position: absolute;
+  top: 95px;
+  left: 20px;
+  padding: 8px 16px;
+  background: var(--white);
+  color: var(--green-dark);
+  border: 2px solid var(--gold);
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+  z-index: 100;
+  transition: all 0.3s;
+}
+.back-btn:hover { background: var(--gold); }
+
+.booking-filters {
+  max-width: 900px;
+  margin: 0 auto 25px;
+  padding: 20px;
+  background: var(--white);
+  border-radius: 20px;
+  box-shadow: 0 5px 20px rgba(11,61,46,0.08);
+}
+.booking-filters h3 {
+  color: var(--green-dark);
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+.filter-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 12px;
+  align-items: end;
+}
+.filter-row label {
+  display: block;
+  font-weight: 700;
+  color: var(--green-dark);
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+}
+.filter-row input,
+.filter-row select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid var(--cream-dark);
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  background: var(--cream);
+}
+.filter-row input:focus,
+.filter-row select:focus {
+  outline: none;
+  border-color: var(--gold);
+  background: var(--white);
+}
+.filter-btn {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, var(--green), var(--green-dark));
+  color: var(--gold);
+  border: none;
+  border-radius: 12px;
+  font-family: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.rooms-list {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.booking-room-card {
+  background: var(--white);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(11,61,46,0.1);
+  transition: all 0.3s;
+  border: 2px solid transparent;
+}
+.booking-room-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--gold);
+  box-shadow: 0 15px 40px rgba(11,61,46,0.15);
+}
+.booking-room-img {
+  height: 180px;
+  background: var(--cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  position: relative;
+  overflow: hidden;
+}
+.booking-room-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.booking-room-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+.badge-available-room { background: #4caf50; color: white; }
+.badge-unavailable-room { background: #ef5350; color: white; }
+
+.booking-room-body {
+  padding: 20px;
+}
+.booking-room-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--green-dark);
+  margin-bottom: 8px;
+}
+.booking-room-desc {
+  font-size: 0.88rem;
+  color: var(--bronze);
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+.booking-room-features {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+.room-feature {
+  padding: 4px 12px;
+  background: var(--cream);
+  border-radius: 15px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--green-dark);
+}
+.booking-room-price {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin-bottom: 15px;
+  padding: 12px;
+  background: var(--cream);
+  border-radius: 12px;
+  border-left: 4px solid var(--gold);
+}
+.price-value {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--green-dark);
+}
+.price-unit {
+  color: var(--bronze);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.book-now-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: var(--green-dark);
+  border: none;
+  border-radius: 12px;
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(242,201,76,0.3);
+}
+.book-now-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(242,201,76,0.5);
+}
+.book-now-btn:disabled {
+  background: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.loading-rooms {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--bronze);
+  font-size: 1.1rem;
+}
+
+.no-rooms {
+  text-align: center;
+  padding: 60px 20px;
+  grid-column: 1 / -1;
+}
+.no-rooms h3 { color: var(--green-dark); margin: 15px 0 8px; }
+.no-rooms p { color: var(--bronze); }
+
+.booking-summary-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, var(--green-dark), var(--green));
+  color: var(--gold);
+  padding: 15px 20px;
+  box-shadow: 0 -8px 25px rgba(0,0,0,0.2);
+  display: none;
+  z-index: 100;
+}
+.booking-summary-bar.show { display: block; }
+.summary-content {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+.summary-info {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.summary-total {
+  font-size: 1.3rem;
+  font-weight: 900;
+}
+
+/* Booking modal */
+.booking-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(11,61,46,0.8);
+  backdrop-filter: blur(8px);
+  z-index: 99999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.booking-modal-overlay.active { display: flex; }
+.booking-modal {
+  background: var(--white);
+  border-radius: 24px;
+  padding: 30px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+.booking-modal h2 {
+  color: var(--green-dark);
+  margin-bottom: 15px;
+  text-align: center;
+}
+.booking-modal-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: var(--cream);
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+.booking-summary-box {
+  background: var(--cream);
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+}
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 0.9rem;
+}
+.summary-line.total {
+  border-top: 2px solid var(--cream-dark);
+  padding-top: 12px;
+  margin-top: 8px;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--green-dark);
+}
+
+@media(max-width: 768px) {
+  .booking-header h1 { font-size: 1.6rem; }
+  .filter-row { grid-template-columns: 1fr; }
+  .rooms-list { grid-template-columns: 1fr; padding: 0 15px; }
+  .booking-room-img { height: 160px; }
+  .back-btn { top: 85px; left: 15px; padding: 6px 12px; font-size: 0.8rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- Navbar (same as index) -->
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="/" class="nav-brand">
+      <span class="brand-icon">&#128054;</span>
+      <span class="brand-text">Refuge de la Tendresse</span>
+    </a>
+    <div id="authLinks" class="nav-auth-buttons"></div>
+  </div>
+</nav>
+
+<a href="/" class="back-btn">&#8592; Retour</a>
+
+<div class="booking-page">
+
+  <div class="booking-header">
+    <h1>&#127968; Hebergement Premium</h1>
+    <p>Selectionnez vos dates et reservez la chambre parfaite pour votre compagnon</p>
+  </div>
+
+  <div class="booking-filters">
+    <h3>&#128197; Vos dates de sejour</h3>
+    <div class="filter-row">
+      <div>
+        <label>Date d'arrivee</label>
+        <input type="date" id="checkIn" min="">
+      </div>
+      <div>
+        <label>Date de depart</label>
+        <input type="date" id="checkOut" min="">
+      </div>
+      <button class="filter-btn" onclick="checkAvailability()">&#128269; Verifier</button>
+    </div>
+  </div>
+
+  <div id="roomsList" class="rooms-list">
+    <div class="loading-rooms">Chargement des chambres...</div>
+  </div>
+
+</div>
+
+<!-- Booking confirmation modal -->
+<div class="booking-modal-overlay" id="bookingModalOverlay">
+  <div class="booking-modal" id="bookingModal"></div>
+</div>
+
+<script src="/app.js"></script>
+<script>
+var allRooms = [];
+var currentBooking = null;
+
+async function loadRooms() {
+  try {
+    var res = await fetch('/api/rooms');
+    allRooms = await res.json();
+    if (!Array.isArray(allRooms)) allRooms = [];
+    renderRooms();
+  } catch(e) {
+    document.getElementById('roomsList').innerHTML = '<div class="no-rooms"><h3>Erreur de chargement</h3></div>';
+  }
+}
+
+function renderRooms(fromDate, toDate) {
+  var container = document.getElementById('roomsList');
+  var visibleRooms = allRooms.filter(function(r) { return r.status !== 'unavailable'; });
+
+  if (visibleRooms.length === 0) {
+    container.innerHTML = '<div class="no-rooms"><div style="font-size:4rem;">&#127968;</div><h3>Aucune chambre disponible</h3></div>';
+    return;
+  }
+
+  var html = '';
+  visibleRooms.forEach(function(r) {
+    var isAvailable = true;
+    var unavailableReason = '';
+
+    if (r.status === 'maintenance') {
+      isAvailable = false;
+      unavailableReason = 'Maintenance';
+    } else if (fromDate && toDate) {
+      // Check blocked dates
+      var blocked = r.blockedDates || [];
+      var overlap = blocked.find(function(b) {
+        return fromDate <= b.to && toDate >= b.from;
+      });
+      if (overlap) {
+        isAvailable = false;
+        unavailableReason = 'Occupe ces dates';
+      }
+    }
+
+    var emoji = r.type === 'royal' ? '&#128081;' : r.type === 'cat' ? '&#128049;' : r.type === 'special' ? '&#11088;' : '&#128054;';
+    var photo = r.photo
+      ? '<img src="' + r.photo + '">'
+      : emoji;
+
+    var badge = isAvailable
+      ? '<span class="booking-room-badge badge-available-room">&#9989; Disponible</span>'
+      : '<span class="booking-room-badge badge-unavailable-room">&#10060; ' + unavailableReason + '</span>';
+
+    var nights = 1;
+    if (fromDate && toDate) {
+      nights = Math.max(1, Math.ceil((new Date(toDate) - new Date(fromDate)) / 86400000));
+    }
+    var totalPrice = (r.price || 0) * nights;
+
+    var buttonText = fromDate && toDate
+      ? 'Reserver (' + totalPrice + ' DH pour ' + nights + ' nuit' + (nights>1?'s':'') + ')'
+      : 'Choisir les dates';
+
+    html += '<div class="booking-room-card">' +
+      '<div class="booking-room-img">' + photo + badge + '</div>' +
+      '<div class="booking-room-body">' +
+        '<div class="booking-room-title">' + r.name + '</div>' +
+        '<div class="booking-room-desc">' + (r.description || '') + '</div>' +
+        '<div class="booking-room-features">' +
+          (r.capacity ? '<span class="room-feature">&#128207; ' + r.capacity + '</span>' : '') +
+          '<span class="room-feature">&#128081; ' + (r.type || 'Standard') + '</span>' +
+        '</div>' +
+        '<div class="booking-room-price">' +
+          '<span class="price-value">' + (r.price || 0) + '</span>' +
+          '<span class="price-unit">DH / nuit</span>' +
+        '</div>' +
+        '<button class="book-now-btn" onclick="openBookingModal(\'' + r.id + '\')"' + (!isAvailable?' disabled':'') + '>' + (isAvailable ? buttonText : 'Non disponible') + '</button>' +
+      '</div>' +
+    '</div>';
+  });
+
+  container.innerHTML = html;
+}
+
+function checkAvailability() {
+  var fromDate = document.getElementById('checkIn').value;
+  var toDate = document.getElementById('checkOut').value;
+
+  if (!fromDate || !toDate) {
+    alert('Veuillez selectionner les deux dates');
+    return;
+  }
+  if (fromDate >= toDate) {
+    alert('La date de depart doit etre apres la date d\'arrivee');
+    return;
+  }
+
+  renderRooms(fromDate, toDate);
+}
+
+async function openBookingModal(roomId) {
+  var fromDate = document.getElementById('checkIn').value;
+  var toDate = document.getElementById('checkOut').value;
+
+  if (!fromDate || !toDate) {
+    alert('Veuillez d\'abord selectionner vos dates ci-dessus');
+    document.getElementById('checkIn').focus();
+    return;
+  }
+
+  var room = allRooms.find(function(r) { return r.id === roomId; });
+  if (!room) return;
+
+  // Get customer's pets
+  var pets = [];
+  try {
+    var res = await fetch('/api/pets?ownerId=' + currentCustomer.id);
+    pets = await res.json();
+    if (!Array.isArray(pets)) pets = [];
+  } catch(e) { pets = []; }
+
+  var nights = Math.ceil((new Date(toDate) - new Date(fromDate)) / 86400000);
+  var totalPrice = (room.price || 0) * nights;
+
+  var petOptions = pets.length > 0
+    ? pets.map(function(p) {
+        var emoji = p.species === 'Chien' ? '&#128021;' : p.species === 'Chat' ? '&#128049;' : '&#128054;';
+        return '<option value="' + p.name + '" data-id="' + p.id + '">' + emoji + ' ' + p.name + ' (' + (p.species||'') + ')</option>';
+      }).join('')
+    : '';
+
+  var petSelector = pets.length > 0
+    ? '<div style="margin-bottom:15px;"><label style="display:block;font-weight:700;color:var(--green-dark);margin-bottom:6px;font-size:0.85rem;">Selectionnez votre animal *</label><select id="bookPet" required style="width:100%;padding:12px;border:2px solid var(--cream-dark);border-radius:12px;font-family:inherit;">' + petOptions + '</select></div>'
+    : '<div style="margin-bottom:15px;padding:15px;background:#fff3cd;border-radius:12px;color:#856404;font-size:0.85rem;">&#9888; Vous devez d\'abord ajouter un animal a votre profil. <a onclick="openMyPets();closeBookingModal();" style="color:var(--green-dark);font-weight:700;cursor:pointer;text-decoration:underline;">Ajouter maintenant</a></div>';
+
+  var html =
+    '<button class="booking-modal-close" onclick="closeBookingModal()">&#10005;</button>' +
+    '<h2>&#128203; Confirmer votre reservation</h2>' +
+    '<div class="booking-summary-box">' +
+      '<div class="summary-line"><span>&#127968; Chambre:</span><strong>' + room.name + '</strong></div>' +
+      '<div class="summary-line"><span>&#128197; Arrivee:</span><span>' + fromDate + '</span></div>' +
+      '<div class="summary-line"><span>&#128197; Depart:</span><span>' + toDate + '</span></div>' +
+      '<div class="summary-line"><span>&#127749; Duree:</span><span>' + nights + ' nuit' + (nights>1?'s':'') + '</span></div>' +
+      '<div class="summary-line"><span>&#128176; Prix par nuit:</span><span>' + (room.price||0) + ' DH</span></div>' +
+      '<div class="summary-line total"><span>Total:</span><span>' + totalPrice + ' DH</span></div>' +
+    '</div>' +
+    '<form onsubmit="confirmBooking(event, \'' + roomId + '\', \'' + fromDate + '\', \'' + toDate + '\', ' + totalPrice + ')">' +
+      petSelector +
+      '<div style="margin-bottom:15px;"><label style="display:block;font-weight:700;color:var(--green-dark);margin-bottom:6px;font-size:0.85rem;">Instructions speciales (optionnel)</label><textarea id="bookNotes" rows="3" style="width:100%;padding:12px;border:2px solid var(--cream-dark);border-radius:12px;font-family:inherit;" placeholder="Regime, medicaments, comportement..."></textarea></div>' +
+      (pets.length > 0
+        ? '<button type="submit" style="width:100%;padding:15px;background:linear-gradient(135deg,var(--green),var(--green-dark));color:var(--gold);border:none;border-radius:12px;font-family:inherit;font-weight:800;font-size:1rem;cursor:pointer;">&#9989; Confirmer la reservation</button>'
+        : '<button type="button" onclick="openMyPets();closeBookingModal();" style="width:100%;padding:15px;background:var(--gold);color:var(--green-dark);border:none;border-radius:12px;font-family:inherit;font-weight:800;font-size:1rem;cursor:pointer;">&#128054; Ajouter un animal d\'abord</button>') +
+    '</form>';
+
+  document.getElementById('bookingModal').innerHTML = html;
+  document.getElementById('bookingModalOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeBookingModal() {
+  document.getElementById('bookingModalOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+async function confirmBooking(e, roomId, fromDate, toDate, totalPrice) {
+  e.preventDefault();
+  var petSelect = document.getElementById('bookPet');
+  var petName = petSelect ? petSelect.value : '';
+  var petId = petSelect ? petSelect.selectedOptions[0].getAttribute('data-id') : '';
+  var notes = document.getElementById('bookNotes').value;
+
+  var room = allRooms.find(function(r) { return r.id === roomId; });
+  if (!room) return;
+
+  var nights = Math.ceil((new Date(toDate) - new Date(fromDate)) / 86400000);
+
+  try {
+    // 1. Create reservation
+    var reservation = {
+      name: currentCustomer.name,
+      email: currentCustomer.email,
+      phone: currentCustomer.phone || '',
+      petName: petName,
+      petId: petId,
+      service: 'boarding',
+      roomId: roomId,
+      roomName: room.name,
+      fromDate: fromDate,
+      toDate: toDate,
+      nights: nights,
+      totalPrice: totalPrice,
+      message: notes,
+      userId: currentCustomer.id
+    };
+
+    await fetch('/api/reservations', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(reservation)
+    });
+
+    // 2. Block the room dates (so calendar shows unavailable)
+    var blocked = room.blockedDates || [];
+    blocked.push({
+      from: fromDate,
+      to: toDate,
+      reason: '&#128054; ' + petName + ' (' + currentCustomer.name + ')',
+      type: 'booking'
+    });
+
+    await fetch('/api/rooms/' + roomId, {
+      method: 'PUT',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        blockedDates: blocked,
+        occupied: true,
+        occupantName: petName,
+        occupantFrom: fromDate,
+        occupantTo: toDate
+      })
+    });
+
+    // Success!
+    document.getElementById('bookingModal').innerHTML =
+      '<div style="text-align:center;padding:20px;">' +
+        '<div style="font-size:5rem;">&#127881;</div>' +
+        '<h2 style="color:var(--green-dark);margin:15px 0;">Reservation confirmee!</h2>' +
+        '<p style="color:var(--bronze);margin-bottom:20px;">Votre reservation pour <strong>' + petName + '</strong> a <strong>' + room.name + '</strong> du <strong>' + fromDate + '</strong> au <strong>' + toDate + '</strong> a ete enregistree.</p>' +
+        '<p style="font-size:0.85rem;color:var(--bronze);margin-bottom:20px;">Vous recevrez une confirmation par email. Nous avons hate de rencontrer ' + petName + '!</p>' +
+        '<button onclick="closeBookingModal();location.reload();" style="padding:12px 30px;background:linear-gradient(135deg,var(--green),var(--green-dark));color:var(--gold);border:none;border-radius:12px;font-family:inherit;font-weight:800;cursor:pointer;">Fermer</button>' +
+      '</div>';
+
+    // Reload rooms to reflect new booking
+    setTimeout(loadRooms, 1000);
+  } catch(err) {
+    alert('Erreur lors de la reservation. Veuillez reessayer.');
+  }
+}
+
+// AUTH CHECK - Must be logged in to access this page
+window.addEventListener('DOMContentLoaded', function() {
+  // Wait a moment for app.js to load currentCustomer
+  setTimeout(function() {
+    if (typeof currentCustomer === 'undefined' || !currentCustomer) {
+      // Not logged in - redirect to home with a prompt
+      alert('Vous devez etre connecte pour reserver une chambre.');
+      window.location.href = '/#login';
+      return;
+    }
+
+    // Set min dates
+    var today = new Date().toISOString().split('T')[0];
+    document.getElementById('checkIn').min = today;
+    document.getElementById('checkOut').min = today;
+
+    // Auto-set defaults
+    var tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    var nextWeek = new Date();
+    nextWeek.setDate(nextWeek.getDate() + 3);
+    document.getElementById('checkIn').value = tomorrow.toISOString().split('T')[0];
+    document.getElementById('checkOut').value = nextWeek.toISOString().split('T')[0];
+
+    // Update auth UI
+    if (typeof renderAuthUI === 'function') renderAuthUI();
+
+    // Load rooms
+    loadRooms();
+  }, 300);
+});
+</script>
+
+</body>
+</html>

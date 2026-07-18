@@ -1223,3 +1223,32 @@ if (document.readyState === 'loading') {
 } else {
   renderAuthUI();
 }
+
+// ================================================
+// ROUTE TO BOOKING PAGE (login-gated)
+// ================================================
+function goToBooking() {
+  var user = JSON.parse(localStorage.getItem('refugeCustomer') || 'null');
+  if (!user) {
+    // Not logged in - show login modal with message
+    if (typeof openLoginModal === 'function') {
+      openLoginModal();
+      // Add a helpful message to the modal
+      setTimeout(function() {
+        var modal = document.getElementById('customerModal');
+        if (modal) {
+          var msg = document.createElement('div');
+          msg.style.cssText = 'background:#fff3cd;color:#856404;padding:12px;border-radius:10px;margin-bottom:15px;font-size:0.85rem;text-align:center;border:1px solid #ffc107;';
+          msg.innerHTML = '&#128274; Connectez-vous ou creez un compte pour reserver une chambre';
+          var h2 = modal.querySelector('h2');
+          if (h2) h2.parentNode.insertBefore(msg, h2.nextSibling);
+        }
+      }, 100);
+    } else {
+      alert('Connectez-vous pour reserver une chambre');
+    }
+  } else {
+    // Logged in - go to booking page
+    window.location.href = '/booking.html';
+  }
+}
