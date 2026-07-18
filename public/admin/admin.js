@@ -1,4 +1,4 @@
-﻿const ADMIN_USER = "admin";
+const ADMIN_USER = "admin";
 const ADMIN_PASS = "refuge2024";
 
 let reservations = [];
@@ -7,6 +7,7 @@ let events = [];
 let services = [];
 let settings = { currency: "EUR", currencySymbol: "EUR" };
 let clients = [];
+let messages = [];
 let pets = [];
 let currentView = "dashboard";
 
@@ -34,14 +35,15 @@ function toggleSidebar() { document.querySelector(".sidebar").classList.toggle("
 // DATA
 async function loadAllData() {
   try {
-    const [r, s, rm, ev, sv, cl, pt] = await Promise.all([
+    const [r, s, rm, ev, sv, cl, pt, ms] = await Promise.all([
       fetch("/api/reservations").then(x => x.json()),
       fetch("/api/settings").then(x => x.json()),
       fetch("/api/rooms").then(x => x.json()),
       fetch("/api/events").then(x => x.json()),
       fetch("/api/services").then(x => x.json()),
       fetch("/api/clients").then(x => x.json()).catch(() => []),
-      fetch("/api/pets").then(x => x.json()).catch(() => [])
+      fetch("/api/pets").then(x => x.json()).catch(() => []),
+      fetch("/api/messages").then(x => x.json()).catch(() => [])
     ]);
     reservations = Array.isArray(r) ? r : [];
     settings = s || settings;
@@ -50,12 +52,17 @@ async function loadAllData() {
     services = Array.isArray(sv) ? sv : [];
     clients = Array.isArray(cl) ? cl : [];
     pets = Array.isArray(pt) ? pt : [];
+    messages = Array.isArray(ms) ? ms : [];
     updateBadges();
     if (currentView) loadView(currentView);
   } catch (e) { console.error(e); showToast("Erreur de chargement", "error"); }
 }
 function updateBadges() {
   const p = reservations.filter(r => r.status === "pending").length;
+
+  const unreadMsgs = messages.filter(m => !m.read).length;
+  const mb = document.getElementById("messagesBadge");
+  if (mb) mb.textContent = unreadMsgs;
   const b = document.getElementById("pendingBadge");
   if (b) b.textContent = p;
 }
@@ -74,9 +81,9 @@ function loadView(view) {
   document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
   const nav = document.querySelector('[data-view="' + view + '"]');
   if (nav) nav.classList.add("active");
-  const titles = { dashboard:"Tableau de bord", reservations:"Reservations", calendar:"Calendrier", rooms:"Chambres", services:"Services", clients:"Clients", pets:"Animaux", finances:"Finances", settings:"Parametres" };
+  const titles = { dashboard:"Tableau de bord", reservations:"Reservations", messages:"Messages", calendar:"Calendrier", rooms:"Chambres", services:"Services", clients:"Clients", pets:"Animaux", finances:"Finances", settings:"Parametres" };
   document.getElementById("pageTitle").textContent = titles[view] || view;
-  const R = { dashboard:renderDashboard, reservations:renderReservations, calendar:renderCalendar, rooms:renderRooms, services:renderServices, clients:renderClients, pets:renderPets, finances:renderFinances, settings:renderSettings };
+  const R = { dashboard:renderDashboard, reservations:renderReservations, messages:renderMessages, calendar:renderCalendar, rooms:renderRooms, services:renderServices, clients:renderClients, pets:renderPets, finances:renderFinances, settings:renderSettings };
   document.getElementById("content").innerHTML = R[view] ? R[view]() : "<div class='card'>404</div>";
   window.scrollTo(0, 0);
 }
@@ -1231,3 +1238,83 @@ window.addEventListener("DOMContentLoaded", () => {
 setInterval(() => {
   if (sessionStorage.getItem("adminAuth") === "1" && currentView === "dashboard") loadAllData();
 }, 30000);
+
+
+// ================================================
+// MESSAGES VIEW
+// ================================================
+function renderMessages() {
+  const unread = messages.filter(m => !m.read).length;
+  const total = messages.length;
+
+  let h = '<div class="stats-grid">';
+  h += statCard("orange", "&#128231;", total, "Total messages");
+  h += statCard("blue", "&#9873;", unread, "Non lus");
+  h += statCard("green", "&#9989;", total - unread, "Lus");
+  h += statCard("purple", "&#128100;", new Set(messages.map(m => m.email).filter(Boolean)).size, "Expediteurs uniques");
+  h += '</div>';
+
+  h += '<div class="card"><div class="card-header"><h3 class="card-title">&#128231; Boite de reception</h3>';
+  h += '<button class="btn btn-secondary btn-sm" onclick="loadAllData()">&#128260; Rafraichir</button></div>';
+
+  if (messages.length === 0) {
+    h += emptyState("&#128231;", "Aucun message", "Les messages du formulaire de contact apparaitront ici");
+  } else {
+    h += '<div class="messages-list">';
+    messages.slice().reverse().forEach(m => {
+      const isUnread = !m.read;
+      h += '<div class="message-item ' + (isUnread ? 'unread' : '') + '" onclick="viewMessage(\'' + m.id + '\')">';
+      h += '<div class="msg-header">';
+      h += '<div class="msg-sender">';
+      if (isUnread) h += '<span class="unread-dot"></span>';
+      h += '<strong>' + (m.name || '-') + '</strong>';
+      h += '<span class="msg-email">' + (m.email || '') + '</span>';
+      h += '</div>';
+      h += '<span class="msg-date">' + formatDate(m.createdAt) + '</span>';
+      h += '</div>';
+      if (m.petName) h += '<div class="msg-pet">&#128054; ' + m.petName + (m.service ? ' - ' + serviceName(m.service) : '') + '</div>';
+      h += '<div class="msg-preview">' + (m.message || '').substring(0, 120) + ((m.message || '').length > 120 ? '...' : '') + '</div>';
+      h += '</div>';
+    });
+    h += '</div>';
+  }
+  h += '</div>';
+  return h;
+}
+
+async function viewMessage(id) {
+  const m = messages.find(x => x.id === id);
+  if (!m) return;
+
+  // Mark as read
+  if (!m.read) {
+    m.read = true;
+    await fetch("/api/messages/" + id, { method:"PUT", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ read: true }) });
+    updateBadges();
+  }
+
+  let h = '<button class="modal-close" onclick="closeModal()">&#10005;</button>';
+  h += '<h2>&#128231; Message de ' + (m.name || '-') + '</h2>';
+  h += '<div class="detail-row"><span class="detail-label">Date:</span><span class="detail-value">' + formatDate(m.createdAt) + '</span></div>';
+  h += '<div class="detail-row"><span class="detail-label">Nom:</span><span class="detail-value">' + (m.name || '-') + '</span></div>';
+  h += '<div class="detail-row"><span class="detail-label">Email:</span><span class="detail-value">' + (m.email || '-') + '</span></div>';
+  if (m.phone) h += '<div class="detail-row"><span class="detail-label">Telephone:</span><span class="detail-value">' + m.phone + '</span></div>';
+  if (m.petName) h += '<div class="detail-row"><span class="detail-label">Animal:</span><span class="detail-value">&#128054; ' + m.petName + '</span></div>';
+  if (m.service) h += '<div class="detail-row"><span class="detail-label">Service:</span><span class="detail-value">' + serviceName(m.service) + '</span></div>';
+  h += '<div style="margin-top:20px;padding:20px;background:var(--cream);border-radius:14px;border-left:4px solid var(--gold);"><strong>Message:</strong><p style="margin-top:10px;line-height:1.6;">' + (m.message || '(vide)').replace(/\n/g, '<br>') + '</p></div>';
+  h += '<div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap">';
+  h += '<a href="mailto:' + m.email + '?subject=Re: Votre message" class="btn btn-primary">&#128231; Repondre par email</a>';
+  if (m.phone) h += '<a href="tel:' + m.phone + '" class="btn btn-success">&#128222; Appeler</a>';
+  h += '<button class="btn btn-danger" onclick="deleteMessage(\'' + m.id + '\')">&#128465; Supprimer</button>';
+  h += '<button class="btn btn-secondary" onclick="closeModal()">Fermer</button>';
+  h += '</div>';
+  openModal(h);
+}
+
+async function deleteMessage(id) {
+  if (!confirm("Supprimer ce message ?")) return;
+  await fetch("/api/messages/" + id, { method:"DELETE" });
+  closeModal();
+  await loadAllData();
+  showToast("Message supprime", "success");
+}

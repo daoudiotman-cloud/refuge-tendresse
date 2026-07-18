@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=20260718044234">
+<link rel="stylesheet" href="style.css?v=20260718045942">
 <link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#0b3d2e">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -39,7 +39,7 @@ if (!sessionStorage.getItem('splashSeen') && !window.location.search.includes('n
     <a href="#home" data-i18n="nav_home">Accueil</a>
     <a href="#services" data-i18n="nav_services">Services</a>
     
-    <a href="#training" data-i18n="nav_training">Formation</a>
+    
     <a href="#about" data-i18n="nav_about">À propos</a>
     <a href="#testimonials" data-i18n="nav_testimonials">Avis</a>
     <a href="#contact" data-i18n="nav_contact">Contact</a>
@@ -195,37 +195,7 @@ if (!sessionStorage.getItem('splashSeen') && !window.location.search.includes('n
 
 
 
-<section id="training" class="section training">
-  <div class="container">
-    <div class="text-center">
-      <span class="section-badge" data-i18n="train_badge">Formation</span>
-      <h2 class="section-title"><span data-i18n="train_title1">Programmes</span> <span class="accent" data-i18n="train_title2">d'éducation</span></h2>
-      <p class="section-subtitle" data-i18n="train_subtitle">Des cours adaptés à chaque âge et niveau</p>
-    </div>
-    <div class="training-grid">
-      <div class="training-card">
-        <div class="training-icon">🐶</div>
-        <h4 data-i18n="train1_title">École du Chiot</h4>
-        <p data-i18n="train1_desc">Socialisation dès 2 mois</p>
-      </div>
-      <div class="training-card">
-        <div class="training-icon">🎯</div>
-        <h4 data-i18n="train2_title">Obéissance</h4>
-        <p data-i18n="train2_desc">Commandes de base et avancées</p>
-      </div>
-      <div class="training-card">
-        <div class="training-icon">💫</div>
-        <h4 data-i18n="train3_title">Comportement</h4>
-        <p data-i18n="train3_desc">Résolution de problèmes</p>
-      </div>
-      <div class="training-card">
-        <div class="training-icon">🏅</div>
-        <h4 data-i18n="train4_title">Agility & Sport</h4>
-        <p data-i18n="train4_desc">Activités sportives canines</p>
-      </div>
-    </div>
-  </div>
-</section>
+
 
 <section id="about" class="section about">
   <div class="container">
@@ -314,7 +284,7 @@ if (!sessionStorage.getItem('splashSeen') && !window.location.search.includes('n
     <div class="text-center">
       <span class="section-badge" data-i18n="contact_badge">Contact</span>
       <h2 class="section-title"><span data-i18n="contact_title1">Réservez</span> <span class="accent" data-i18n="contact_title2">maintenant</span></h2>
-      <p class="section-subtitle" data-i18n="contact_subtitle">Un séjour de rêve pour votre compagnon</p>
+      <p class="section-subtitle" data-i18n="contact_subtitle">Envoyez-nous un message, nous vous repondrons rapidement</p>
     </div>
     <div class="contact-grid">
       <div class="contact-info">
@@ -363,7 +333,7 @@ if (!sessionStorage.getItem('splashSeen') && !window.location.search.includes('n
           </select>
         </div>
         <div class="form-group"><label data-i18n="form_message">Message</label><textarea rows="4"></textarea></div>
-        <button type="submit" class="btn btn-primary full-width" data-i18n="form_submit">Envoyer la demande 🐾</button>
+        <button type="submit" class="btn btn-primary full-width" data-i18n="form_submit">&#128231; Envoyer le message</button>
       </form>
     </div>
   </div>
@@ -381,7 +351,7 @@ if (!sessionStorage.getItem('splashSeen') && !window.location.search.includes('n
         <a href="#home" data-i18n="nav_home">Accueil</a>
         <a href="#services" data-i18n="nav_services">Services</a>
         
-        <a href="#training" data-i18n="nav_training">Formation</a>
+        
       </div>
       <div class="footer-col">
         <h4 data-i18n="footer_services_title">Services</h4>
@@ -406,14 +376,14 @@ if (!sessionStorage.getItem('splashSeen') && !window.location.search.includes('n
   <a href="#home" onclick="toggleMenu()" data-i18n="nav_home">Accueil</a>
   <a href="#services" onclick="toggleMenu()" data-i18n="nav_services">Services</a>
   
-  <a href="#training" onclick="toggleMenu()" data-i18n="nav_training">Formation</a>
+  
   <a href="#about" onclick="toggleMenu()" data-i18n="nav_about">À propos</a>
   <a href="#testimonials" onclick="toggleMenu()" data-i18n="nav_testimonials">Avis</a>
   <a href="#contact" onclick="toggleMenu()" data-i18n="nav_contact">Contact</a>
 </div>
 
 <script src="translations.js?v=20260716064205"></script>
-<script src="app.js?v=20260718044234"></script>
+<script src="app.js?v=20260718045942"></script>
 </body>
 </html>
 

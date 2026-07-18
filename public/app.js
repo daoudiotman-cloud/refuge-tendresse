@@ -581,7 +581,7 @@ async function handleContactSubmit(e) {
   }
 
   try {
-    const res = await fetch("/api/reservations", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(data) });
+    const res = await fetch("/api/messages", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(data) });
     const result = await res.json();
     if (result.success) {
       form.reset();
@@ -1252,3 +1252,70 @@ function goToBooking() {
     window.location.href = '/booking.html';
   }
 }
+
+// ================================================
+// CONTACT FORM -> Send to Messages
+// ================================================
+(function() {
+  function attachContactForm() {
+    var form = document.getElementById('contactForm');
+    if (!form) return;
+
+    // Remove any old listener by cloning
+    var newForm = form.cloneNode(true);
+    form.parentNode.replaceChild(newForm, form);
+
+    newForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      var data = {
+        name: newForm.querySelector('[name="name"]')?.value || '',
+        email: newForm.querySelector('[name="email"]')?.value || '',
+        phone: newForm.querySelector('[name="phone"]')?.value || '',
+        petName: newForm.querySelector('[name="petName"]')?.value || '',
+        service: newForm.querySelector('[name="service"]')?.value || '',
+        message: newForm.querySelector('[name="message"]')?.value || '',
+        userId: (typeof currentCustomer !== 'undefined' && currentCustomer) ? currentCustomer.id : null
+      };
+
+      if (!data.name || !data.email || !data.message) {
+        alert('Veuillez remplir tous les champs obligatoires (nom, email, message)');
+        return;
+      }
+
+      try {
+        var res = await fetch('/api/messages', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify(data)
+        });
+        var result = await res.json();
+        if (result.success) {
+          newForm.reset();
+
+          // Show success message
+          var success = document.createElement('div');
+          success.style.cssText = 'background:linear-gradient(135deg,var(--green),var(--green-dark));color:var(--gold);padding:20px;border-radius:16px;margin-bottom:15px;text-align:center;font-weight:700;box-shadow:0 8px 25px rgba(47,107,63,0.3);';
+          success.innerHTML = '&#9989; Message envoye avec succes! Nous vous repondrons bientot.';
+          newForm.parentNode.insertBefore(success, newForm);
+          setTimeout(function() { success.remove(); }, 5000);
+
+          // Also show toast if function exists
+          if (typeof customerToast === 'function') {
+            customerToast('Message envoye!');
+          }
+        } else {
+          alert('Erreur lors de l envoi. Veuillez reessayer.');
+        }
+      } catch(err) {
+        alert('Erreur de connexion. Veuillez reessayer.');
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', attachContactForm);
+  } else {
+    attachContactForm();
+  }
+})();
