@@ -784,3 +784,442 @@ if ("serviceWorker" in navigator) {
     initNav();
   }
 })();
+
+// ================================================
+// CUSTOMER AUTH SYSTEM (v3 - complete)
+// ================================================
+var currentCustomer = JSON.parse(localStorage.getItem('refugeCustomer') || 'null');
+
+function renderAuthUI() {
+  var authLinks = document.getElementById('authLinks');
+  var mobileAuth = document.getElementById('mobileAuthLinks');
+  if (!authLinks) return;
+
+  if (currentCustomer) {
+    // Logged in - show user menu
+    var avatar = currentCustomer.photo
+      ? '<img src="' + currentCustomer.photo + '" class="nav-user-avatar">'
+      : '<div class="nav-user-avatar-placeholder">' + (currentCustomer.name || 'U').charAt(0).toUpperCase() + '</div>';
+
+    var firstName = (currentCustomer.name || 'Compte').split(' ')[0];
+
+    authLinks.innerHTML =
+      '<div class="nav-user-menu">' +
+        '<button class="nav-user-btn" onclick="toggleUserDropdown(event)">' +
+          avatar +
+          '<span>' + firstName + '</span>' +
+          '<span style="font-size:0.6rem;">&#9660;</span>' +
+        '</button>' +
+        '<div class="nav-user-dropdown" id="userDropdown">' +
+          '<div class="nav-user-dropdown-header">Bonjour, ' + (currentCustomer.name || 'Client') + '!</div>' +
+          '<a onclick="openMyAccount()">&#128100; Mon Compte</a>' +
+          '<a onclick="openMyPets()">&#128054; Mes Animaux</a>' +
+          '<div class="nav-user-dropdown-divider"></div>' +
+          '<a class="nav-user-logout" onclick="logoutCustomer()">&#128682; Deconnexion</a>' +
+        '</div>' +
+      '</div>';
+
+    if (mobileAuth) {
+      mobileAuth.innerHTML =
+        '<a onclick="openMyAccount()" style="background:var(--gold);color:var(--green-dark);">&#128100; Mon Compte</a>' +
+        '<a onclick="openMyPets()" style="background:var(--cream);color:var(--green-dark);">&#128054; Mes Animaux</a>' +
+        '<a onclick="logoutCustomer()" style="background:transparent;color:var(--gold);border:2px solid var(--gold);">&#128682; Deconnexion</a>';
+    }
+  } else {
+    // Not logged in - show login/register
+    authLinks.innerHTML =
+      '<button class="btn-nav-login" onclick="openLoginModal()">Connexion</button>' +
+      '<button class="btn-nav-register" onclick="openRegisterModal()">Creer un compte</button>';
+
+    if (mobileAuth) {
+      mobileAuth.innerHTML =
+        '<a onclick="openLoginModal()" style="background:transparent;color:var(--gold);border:2px solid var(--gold);">Connexion</a>' +
+        '<a onclick="openRegisterModal()" style="background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:var(--green-dark);">Creer un compte</a>';
+    }
+  }
+}
+
+function toggleUserDropdown(e) {
+  if (e) e.stopPropagation();
+  var dd = document.getElementById('userDropdown');
+  if (dd) dd.classList.toggle('show');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-user-menu')) {
+    var dd = document.getElementById('userDropdown');
+    if (dd) dd.classList.remove('show');
+  }
+});
+
+// Simple modal system
+function showCustomerModal(html) {
+  closeCustomerModal();
+  var overlay = document.createElement('div');
+  overlay.id = 'customerModalOverlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(11,61,46,0.7);backdrop-filter:blur(8px);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;';
+  overlay.innerHTML = '<div id="customerModal" style="background:var(--white);border-radius:20px;padding:30px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;position:relative;">' + html + '</div>';
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) closeCustomerModal(); });
+  document.body.appendChild(overlay);
+  document.body.style.overflow = 'hidden';
+  // Close mobile menu if open
+  var mm = document.getElementById('mobileMenu');
+  if (mm) mm.classList.remove('active');
+}
+function closeCustomerModal() {
+  var overlay = document.getElementById('customerModalOverlay');
+  if (overlay) overlay.remove();
+  document.body.style.overflow = '';
+}
+
+function customerToast(msg, isError) {
+  var t = document.createElement('div');
+  t.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:' + (isError?'#ef5350':'linear-gradient(135deg,var(--green),var(--green-dark))') + ';color:' + (isError?'#fff':'var(--gold)') + ';padding:14px 28px;border-radius:14px;font-weight:700;z-index:99999;box-shadow:0 10px 30px rgba(0,0,0,0.3);';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(function() { t.remove(); }, 3500);
+}
+
+// LOGIN MODAL
+function openLoginModal() {
+  var html =
+    '<button onclick="closeCustomerModal()" style="position:absolute;top:15px;right:15px;background:var(--cream);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;">&#10005;</button>' +
+    '<div style="text-align:center;font-size:2.5rem;margin-bottom:10px;">&#128274;</div>' +
+    '<h2 style="text-align:center;color:var(--green-dark);margin-bottom:5px;">Connexion</h2>' +
+    '<p style="text-align:center;color:var(--bronze);margin-bottom:20px;font-size:0.9rem;">Accedez a votre compte</p>' +
+    '<form onsubmit="doLogin(event)">' +
+      '<div style="margin-bottom:15px;">' +
+        '<label style="display:block;font-weight:700;color:var(--green-dark);margin-bottom:6px;font-size:0.85rem;">Email</label>' +
+        '<input type="email" id="loginEmail" required style="width:100%;padding:12px;border:2px solid var(--cream-dark);border-radius:12px;font-family:inherit;">' +
+      '</div>' +
+      '<div style="margin-bottom:15px;">' +
+        '<label style="display:block;font-weight:700;color:var(--green-dark);margin-bottom:6px;font-size:0.85rem;">Mot de passe</label>' +
+        '<input type="password" id="loginPassword" required style="width:100%;padding:12px;border:2px solid var(--cream-dark);border-radius:12px;font-family:inherit;">' +
+      '</div>' +
+      '<button type="submit" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--green),var(--green-dark));color:var(--gold);border:none;border-radius:12px;font-family:inherit;font-weight:800;font-size:0.95rem;cursor:pointer;">Se connecter</button>' +
+      '<p id="loginErr" style="color:var(--danger);text-align:center;margin-top:10px;font-size:0.85rem;"></p>' +
+    '</form>' +
+    '<p style="text-align:center;margin-top:15px;font-size:0.85rem;color:var(--bronze);">Pas de compte? <a onclick="openRegisterModal()" style="color:var(--green-dark);font-weight:700;cursor:pointer;">Creer un compte</a></p>';
+  showCustomerModal(html);
+}
+
+async function doLogin(e) {
+  e.preventDefault();
+  var email = document.getElementById('loginEmail').value;
+  var password = document.getElementById('loginPassword').value;
+  try {
+    var res = await fetch('/api/auth/login', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ email: email, password: password }) });
+    var data = await res.json();
+    if (data.success && data.user) {
+      currentCustomer = data.user;
+      localStorage.setItem('refugeCustomer', JSON.stringify(currentCustomer));
+      closeCustomerModal();
+      renderAuthUI();
+      customerToast('Bienvenue ' + currentCustomer.name + '!');
+    } else {
+      document.getElementById('loginErr').textContent = 'Email ou mot de passe incorrect';
+    }
+  } catch(err) {
+    document.getElementById('loginErr').textContent = 'Erreur de connexion';
+  }
+}
+
+// REGISTER MODAL
+function openRegisterModal() {
+  var html =
+    '<button onclick="closeCustomerModal()" style="position:absolute;top:15px;right:15px;background:var(--cream);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;">&#10005;</button>' +
+    '<div style="text-align:center;font-size:2.5rem;margin-bottom:10px;">&#128100;</div>' +
+    '<h2 style="text-align:center;color:var(--green-dark);margin-bottom:5px;">Creer un compte</h2>' +
+    '<p style="text-align:center;color:var(--bronze);margin-bottom:20px;font-size:0.9rem;">Rejoignez le Refuge de la Tendresse</p>' +
+    '<form onsubmit="doRegister(event)">' +
+      '<div style="text-align:center;margin-bottom:15px;">' +
+        '<label for="regPhotoIn" style="display:inline-block;cursor:pointer;">' +
+          '<div id="regPhotoPrev" style="width:80px;height:80px;border-radius:50%;background:var(--cream);border:3px dashed var(--cream-dark);display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--bronze);">&#128247;</div>' +
+        '</label>' +
+        '<input type="file" id="regPhotoIn" accept="image/*" onchange="prevRegPhoto(event)" style="display:none;">' +
+        '<input type="hidden" id="regPhoto" value="">' +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">' +
+        '<div><label style="display:block;font-weight:700;color:var(--green-dark);margin-bottom:4px;font-size:0.8rem;">Nom complet *</label><input type="text" id="regName" required style="width:100%;padding:10px;border:2px solid var(--cream-dark);border-radius:10px;font-family:inherit;font-size:0.9rem;"></div>' +
+        '<div><label style="display:block;font-weight:700;color:var(--green-dark);margin-bottom:4px;font-size:0.8rem;">Telephone</label><input type="tel" id="regPhone" style="width:100%;padding:10px;border:2px solid var(--cream-dark);border-radius:10px;font-family:inherit;font-size:0.9rem;"></div>' +
+      '</div>' +
+      '<div style="margin-bottom:12px;"><label style="display:block;font-weight:700;color:var(--green-dark);margin-bottom:4px;font-size:0.8rem;">Email *</label><input type="email" id="regEmail" required style="width:100%;padding:10px;border:2px solid var(--cream-dark);border-radius:10px;font-family:inherit;font-size:0.9rem;"></div>' +
+      '<div style="margin-bottom:12px;"><label style="display:block;font-weight:700;color:var(--green-dark);margin-bottom:4px;font-size:0.8rem;">Adresse</label><input type="text" id="regAddress" style="width:100%;padding:10px;border:2px solid var(--cream-dark);border-radius:10px;font-family:inherit;font-size:0.9rem;"></div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px;">' +
+        '<div><label style="display:block;font-weight:700;color:var(--green-dark);margin-bottom:4px;font-size:0.8rem;">Mot de passe *</label><input type="password" id="regPass" required minlength="6" style="width:100%;padding:10px;border:2px solid var(--cream-dark);border-radius:10px;font-family:inherit;font-size:0.9rem;"></div>' +
+        '<div><label style="display:block;font-weight:700;color:var(--green-dark);margin-bottom:4px;font-size:0.8rem;">Confirmer *</label><input type="password" id="regPass2" required style="width:100%;padding:10px;border:2px solid var(--cream-dark);border-radius:10px;font-family:inherit;font-size:0.9rem;"></div>' +
+      '</div>' +
+      '<button type="submit" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--green),var(--green-dark));color:var(--gold);border:none;border-radius:12px;font-family:inherit;font-weight:800;font-size:0.95rem;cursor:pointer;">Creer mon compte</button>' +
+      '<p id="regErr" style="color:var(--danger);text-align:center;margin-top:10px;font-size:0.85rem;"></p>' +
+    '</form>' +
+    '<p style="text-align:center;margin-top:15px;font-size:0.85rem;color:var(--bronze);">Deja un compte? <a onclick="openLoginModal()" style="color:var(--green-dark);font-weight:700;cursor:pointer;">Se connecter</a></p>';
+  showCustomerModal(html);
+}
+
+function prevRegPhoto(e) {
+  var f = e.target.files[0]; if (!f) return;
+  var r = new FileReader();
+  r.onload = function(ev) {
+    document.getElementById('regPhoto').value = ev.target.result;
+    document.getElementById('regPhotoPrev').outerHTML = '<img id="regPhotoPrev" src="' + ev.target.result + '" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);">';
+  };
+  r.readAsDataURL(f);
+}
+
+async function doRegister(e) {
+  e.preventDefault();
+  var pass = document.getElementById('regPass').value;
+  var pass2 = document.getElementById('regPass2').value;
+  if (pass !== pass2) {
+    document.getElementById('regErr').textContent = 'Les mots de passe ne correspondent pas';
+    return;
+  }
+  var data = {
+    name: document.getElementById('regName').value,
+    email: document.getElementById('regEmail').value,
+    phone: document.getElementById('regPhone').value,
+    address: document.getElementById('regAddress').value,
+    photo: document.getElementById('regPhoto').value,
+    password: pass
+  };
+  try {
+    var res = await fetch('/api/auth/register', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) });
+    var result = await res.json();
+    if (result.success && result.user) {
+      currentCustomer = result.user;
+      localStorage.setItem('refugeCustomer', JSON.stringify(currentCustomer));
+      closeCustomerModal();
+      renderAuthUI();
+      customerToast('Bienvenue ' + currentCustomer.name + '!');
+      setTimeout(openMyPets, 800);
+    } else {
+      document.getElementById('regErr').textContent = result.error || 'Cet email est deja utilise';
+    }
+  } catch(err) {
+    document.getElementById('regErr').textContent = 'Erreur lors de l inscription';
+  }
+}
+
+function logoutCustomer() {
+  currentCustomer = null;
+  localStorage.removeItem('refugeCustomer');
+  renderAuthUI();
+  customerToast('A bientot!');
+}
+
+// MY ACCOUNT MODAL
+function openMyAccount() {
+  if (!currentCustomer) { openLoginModal(); return; }
+  var c = currentCustomer;
+  var avatarHtml = c.photo
+    ? '<img id="accPhotoPrev" src="' + c.photo + '" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);">'
+    : '<div id="accPhotoPrev" style="width:80px;height:80px;border-radius:50%;background:var(--gold);color:var(--green-dark);display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:800;">' + (c.name || 'U').charAt(0).toUpperCase() + '</div>';
+
+  var html =
+    '<button onclick="closeCustomerModal()" style="position:absolute;top:15px;right:15px;background:var(--cream);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;">&#10005;</button>' +
+    '<h2 style="text-align:center;color:var(--green-dark);margin-bottom:20px;">Mon Compte</h2>' +
+    '<form onsubmit="doSaveAccount(event)">' +
+      '<div style="text-align:center;margin-bottom:15px;">' +
+        '<label for="accPhotoIn" style="display:inline-block;cursor:pointer;">' + avatarHtml + '</label>' +
+        '<input type="file" id="accPhotoIn" accept="image/*" onchange="prevAccPhoto(event)" style="display:none;">' +
+        '<input type="hidden" id="accPhoto" value="' + (c.photo||'') + '">' +
+      '</div>' +
+      '<div style="margin-bottom:12px;"><label style="display:block;font-weight:700;color:var(--green-dark);margin-bottom:4px;font-size:0.8rem;">Nom complet</label><input type="text" id="accName" value="' + (c.name||'').replace(/"/g,'&quot;') + '" required style="width:100%;padding:10px;border:2px solid var(--cream-dark);border-radius:10px;font-family:inherit;"></div>' +
+      '<div style="margin-bottom:12px;"><label style="display:block;font-weight:700;color:var(--green-dark);margin-bottom:4px;font-size:0.8rem;">Email</label><input type="email" value="' + (c.email||'') + '" disabled style="width:100%;padding:10px;border:2px solid var(--cream-dark);border-radius:10px;font-family:inherit;opacity:0.6;"></div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">' +
+        '<div><label style="display:block;font-weight:700;color:var(--green-dark);margin-bottom:4px;font-size:0.8rem;">Telephone</label><input type="tel" id="accPhone" value="' + (c.phone||'').replace(/"/g,'&quot;') + '" style="width:100%;padding:10px;border:2px solid var(--cream-dark);border-radius:10px;font-family:inherit;"></div>' +
+        '<div><label style="display:block;font-weight:700;color:var(--green-dark);margin-bottom:4px;font-size:0.8rem;">Adresse</label><input type="text" id="accAddress" value="' + (c.address||'').replace(/"/g,'&quot;') + '" style="width:100%;padding:10px;border:2px solid var(--cream-dark);border-radius:10px;font-family:inherit;"></div>' +
+      '</div>' +
+      '<button type="submit" style="width:100%;padding:14px;background:linear-gradient(135deg,var(--green),var(--green-dark));color:var(--gold);border:none;border-radius:12px;font-family:inherit;font-weight:800;font-size:0.95rem;cursor:pointer;">Enregistrer</button>' +
+    '</form>';
+  showCustomerModal(html);
+}
+
+function prevAccPhoto(e) {
+  var f = e.target.files[0]; if (!f) return;
+  var r = new FileReader();
+  r.onload = function(ev) {
+    document.getElementById('accPhoto').value = ev.target.result;
+    var p = document.getElementById('accPhotoPrev');
+    if (p.tagName === 'IMG') p.src = ev.target.result;
+    else p.outerHTML = '<img id="accPhotoPrev" src="' + ev.target.result + '" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);">';
+  };
+  r.readAsDataURL(f);
+}
+
+async function doSaveAccount(e) {
+  e.preventDefault();
+  var data = {
+    name: document.getElementById('accName').value,
+    phone: document.getElementById('accPhone').value,
+    address: document.getElementById('accAddress').value,
+    photo: document.getElementById('accPhoto').value
+  };
+  try {
+    await fetch('/api/clients/' + currentCustomer.id, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) });
+    Object.assign(currentCustomer, data);
+    localStorage.setItem('refugeCustomer', JSON.stringify(currentCustomer));
+    closeCustomerModal();
+    renderAuthUI();
+    customerToast('Profil mis a jour!');
+  } catch(err) {
+    customerToast('Erreur', true);
+  }
+}
+
+// MY PETS
+async function openMyPets() {
+  if (!currentCustomer) { openLoginModal(); return; }
+  var pets = [];
+  try {
+    var res = await fetch('/api/pets?ownerId=' + currentCustomer.id);
+    pets = await res.json();
+    if (!Array.isArray(pets)) pets = [];
+  } catch(e) { pets = []; }
+
+  var html =
+    '<button onclick="closeCustomerModal()" style="position:absolute;top:15px;right:15px;background:var(--cream);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;">&#10005;</button>' +
+    '<h2 style="text-align:center;color:var(--green-dark);margin-bottom:15px;">Mes Animaux</h2>' +
+    '<button onclick="openAddPet()" style="width:100%;padding:12px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:var(--green-dark);border:none;border-radius:12px;font-family:inherit;font-weight:800;cursor:pointer;margin-bottom:15px;">&#10133; Ajouter un animal</button>';
+
+  if (pets.length === 0) {
+    html += '<div style="text-align:center;padding:30px;color:var(--bronze);"><div style="font-size:3rem;">&#128054;</div><p>Aucun animal enregistre</p></div>';
+  } else {
+    pets.forEach(function(p) {
+      var emoji = p.species==='Chien'?'&#128021;':p.species==='Chat'?'&#128049;':'&#128054;';
+      var photo = p.photo
+        ? '<img src="' + p.photo + '" style="width:70px;height:70px;border-radius:12px;object-fit:cover;">'
+        : '<div style="width:70px;height:70px;border-radius:12px;background:linear-gradient(135deg,var(--green),var(--green-dark));display:flex;align-items:center;justify-content:center;font-size:2rem;">' + emoji + '</div>';
+      html += '<div style="display:flex;gap:12px;padding:12px;background:var(--cream);border-radius:14px;margin-bottom:10px;border:2px solid var(--cream-dark);">' +
+        photo +
+        '<div style="flex:1;">' +
+          '<div style="font-weight:800;color:var(--green-dark);font-size:1rem;">' + emoji + ' ' + p.name + '</div>' +
+          '<div style="font-size:0.8rem;color:var(--bronze);margin:3px 0;">' + (p.species||'') + (p.breed?' · '+p.breed:'') + (p.age?' · '+p.age:'') + '</div>' +
+          '<div style="display:flex;gap:6px;margin-top:6px;">' +
+            '<button onclick="openEditPet(\'' + p.id + '\')" style="padding:5px 12px;background:var(--white);border:1px solid var(--cream-dark);border-radius:8px;font-size:0.75rem;cursor:pointer;font-family:inherit;font-weight:600;">&#9998; Modifier</button>' +
+            '<button onclick="doDeletePet(\'' + p.id + '\')" style="padding:5px 12px;background:#fce4ec;border:1px solid #ef9a9a;color:#c62828;border-radius:8px;font-size:0.75rem;cursor:pointer;font-family:inherit;font-weight:600;">&#128465; Supprimer</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    });
+  }
+  showCustomerModal(html);
+}
+
+function openAddPet() { openPetForm(null); }
+async function openEditPet(id) {
+  var pets = await fetch('/api/pets?ownerId=' + currentCustomer.id).then(function(r){return r.json();});
+  var pet = pets.find(function(p){ return p.id === id; });
+  openPetForm(pet);
+}
+
+function openPetForm(pet) {
+  var p = pet || { name:'', species:'Chien', breed:'', age:'', weight:'', gender:'', color:'', vaccinated:false, sterilized:false, allergies:'', diet:'', medications:'', notes:'', photo:'' };
+  var editing = !!pet;
+
+  var photoHtml = p.photo
+    ? '<img id="petPhotoPrev" src="' + p.photo + '" style="width:120px;height:120px;border-radius:16px;object-fit:cover;border:3px solid var(--gold);">'
+    : '<div id="petPhotoPrev" style="width:120px;height:120px;border-radius:16px;background:var(--cream);border:3px dashed var(--cream-dark);display:flex;align-items:center;justify-content:center;font-size:2rem;color:var(--bronze);flex-direction:column;">&#128247;<div style="font-size:0.7rem;">Photo</div></div>';
+
+  var speciesOpts = ['Chien','Chat','Oiseau','Lapin','Hamster','Reptile','Poisson','Autre'].map(function(s){
+    return '<option value="' + s + '"' + (p.species===s?' selected':'') + '>' + s + '</option>';
+  }).join('');
+
+  var esc = function(str) { return (str||'').replace(/"/g,'&quot;'); };
+
+  var html =
+    '<button onclick="closeCustomerModal()" style="position:absolute;top:15px;right:15px;background:var(--cream);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;z-index:5;">&#10005;</button>' +
+    '<h2 style="text-align:center;color:var(--green-dark);margin-bottom:15px;">' + (editing?'Modifier':'Ajouter un animal') + '</h2>' +
+    '<form onsubmit="doSavePet(event, \'' + (pet?pet.id:'') + '\')">' +
+      '<div style="text-align:center;margin-bottom:15px;">' +
+        '<label for="petPhotoIn" style="display:inline-block;cursor:pointer;">' + photoHtml + '</label>' +
+        '<input type="file" id="petPhotoIn" accept="image/*" onchange="prevPetPhoto(event)" style="display:none;">' +
+        '<input type="hidden" id="petPhoto" value="' + (p.photo||'') + '">' +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">' +
+        '<div><label style="display:block;font-weight:700;color:var(--green-dark);margin-bottom:4px;font-size:0.8rem;">Nom *</label><input type="text" id="petName" value="' + esc(p.name) + '" required style="width:100%;padding:10px;border:2px solid var(--cream-dark);border-radius:10px;font-family:inherit;font-size:0.9rem;"></div>' +
+        '<div><label style="display:block;font-weight:700;color:var(--green-dark);margin-bottom:4px;font-size:0.8rem;">Espece</label><select id="petSpecies" style="width:100%;padding:10px;border:2px solid var(--cream-dark);border-radius:10px;font-family:inherit;font-size:0.9rem;">' + speciesOpts + '</select></div>' +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">' +
+        '<div><label style="display:block;font-weight:700;color:var(--green-dark);margin-bottom:4px;font-size:0.8rem;">Race</label><input type="text" id="petBreed" value="' + esc(p.breed) + '" style="width:100%;padding:10px;border:2px solid var(--cream-dark);border-radius:10px;font-family:inherit;font-size:0.9rem;"></div>' +
+        '<div><label style="display:block;font-weight:700;color:var(--green-dark);margin-bottom:4px;font-size:0.8rem;">Couleur</label><input type="text" id="petColor" value="' + esc(p.color) + '" style="width:100%;padding:10px;border:2px solid var(--cream-dark);border-radius:10px;font-family:inherit;font-size:0.9rem;"></div>' +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;">' +
+        '<div><label style="display:block;font-weight:700;color:var(--green-dark);margin-bottom:4px;font-size:0.8rem;">Age</label><input type="text" id="petAge" value="' + esc(p.age) + '" placeholder="3 ans" style="width:100%;padding:10px;border:2px solid var(--cream-dark);border-radius:10px;font-family:inherit;font-size:0.9rem;"></div>' +
+        '<div><label style="display:block;font-weight:700;color:var(--green-dark);margin-bottom:4px;font-size:0.8rem;">Poids</label><input type="text" id="petWeight" value="' + esc(p.weight) + '" placeholder="12 kg" style="width:100%;padding:10px;border:2px solid var(--cream-dark);border-radius:10px;font-family:inherit;font-size:0.9rem;"></div>' +
+        '<div><label style="display:block;font-weight:700;color:var(--green-dark);margin-bottom:4px;font-size:0.8rem;">Genre</label><select id="petGender" style="width:100%;padding:10px;border:2px solid var(--cream-dark);border-radius:10px;font-family:inherit;font-size:0.9rem;"><option value="">-</option><option value="Male"' + (p.gender==='Male'?' selected':'') + '>Male</option><option value="Femelle"' + (p.gender==='Femelle'?' selected':'') + '>Femelle</option></select></div>' +
+      '</div>' +
+      '<div style="display:flex;gap:15px;margin-bottom:12px;padding:10px;background:var(--cream);border-radius:10px;">' +
+        '<label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;font-weight:600;color:var(--green-dark);"><input type="checkbox" id="petVacc"' + (p.vaccinated?' checked':'') + '> &#128137; Vaccine</label>' +
+        '<label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.85rem;font-weight:600;color:var(--green-dark);"><input type="checkbox" id="petSter"' + (p.sterilized?' checked':'') + '> &#10004; Sterilise</label>' +
+      '</div>' +
+      '<div style="margin-bottom:10px;"><label style="display:block;font-weight:700;color:var(--green-dark);margin-bottom:4px;font-size:0.8rem;">Allergies</label><input type="text" id="petAllergies" value="' + esc(p.allergies) + '" style="width:100%;padding:10px;border:2px solid var(--cream-dark);border-radius:10px;font-family:inherit;font-size:0.9rem;"></div>' +
+      '<div style="margin-bottom:10px;"><label style="display:block;font-weight:700;color:var(--green-dark);margin-bottom:4px;font-size:0.8rem;">Regime alimentaire</label><input type="text" id="petDiet" value="' + esc(p.diet) + '" style="width:100%;padding:10px;border:2px solid var(--cream-dark);border-radius:10px;font-family:inherit;font-size:0.9rem;"></div>' +
+      '<div style="margin-bottom:10px;"><label style="display:block;font-weight:700;color:var(--green-dark);margin-bottom:4px;font-size:0.8rem;">Medicaments</label><input type="text" id="petMeds" value="' + esc(p.medications) + '" style="width:100%;padding:10px;border:2px solid var(--cream-dark);border-radius:10px;font-family:inherit;font-size:0.9rem;"></div>' +
+      '<div style="margin-bottom:15px;"><label style="display:block;font-weight:700;color:var(--green-dark);margin-bottom:4px;font-size:0.8rem;">Notes</label><textarea id="petNotes" rows="2" style="width:100%;padding:10px;border:2px solid var(--cream-dark);border-radius:10px;font-family:inherit;font-size:0.9rem;">' + esc(p.notes) + '</textarea></div>' +
+      '<div style="display:flex;gap:10px;">' +
+        '<button type="submit" style="flex:1;padding:14px;background:linear-gradient(135deg,var(--green),var(--green-dark));color:var(--gold);border:none;border-radius:12px;font-family:inherit;font-weight:800;cursor:pointer;">&#128190; Enregistrer</button>' +
+        '<button type="button" onclick="openMyPets()" style="padding:14px 20px;background:var(--cream);color:var(--green-dark);border:2px solid var(--cream-dark);border-radius:12px;font-family:inherit;font-weight:700;cursor:pointer;">Annuler</button>' +
+      '</div>' +
+    '</form>';
+  showCustomerModal(html);
+}
+
+function prevPetPhoto(e) {
+  var f = e.target.files[0]; if (!f) return;
+  var r = new FileReader();
+  r.onload = function(ev) {
+    document.getElementById('petPhoto').value = ev.target.result;
+    var p = document.getElementById('petPhotoPrev');
+    if (p.tagName === 'IMG') p.src = ev.target.result;
+    else p.outerHTML = '<img id="petPhotoPrev" src="' + ev.target.result + '" style="width:120px;height:120px;border-radius:16px;object-fit:cover;border:3px solid var(--gold);">';
+  };
+  r.readAsDataURL(f);
+}
+
+async function doSavePet(e, id) {
+  e.preventDefault();
+  var data = {
+    name: document.getElementById('petName').value,
+    species: document.getElementById('petSpecies').value,
+    breed: document.getElementById('petBreed').value,
+    color: document.getElementById('petColor').value,
+    age: document.getElementById('petAge').value,
+    weight: document.getElementById('petWeight').value,
+    gender: document.getElementById('petGender').value,
+    vaccinated: document.getElementById('petVacc').checked,
+    sterilized: document.getElementById('petSter').checked,
+    allergies: document.getElementById('petAllergies').value,
+    diet: document.getElementById('petDiet').value,
+    medications: document.getElementById('petMeds').value,
+    notes: document.getElementById('petNotes').value,
+    photo: document.getElementById('petPhoto').value,
+    ownerId: currentCustomer.id,
+    ownerName: currentCustomer.name,
+    ownerEmail: currentCustomer.email
+  };
+  try {
+    if (id) {
+      await fetch('/api/pets/' + id, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) });
+    } else {
+      await fetch('/api/pets', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data) });
+    }
+    customerToast(id?'Animal modifie!':'Animal ajoute!');
+    openMyPets();
+  } catch(err) {
+    customerToast('Erreur', true);
+  }
+}
+
+async function doDeletePet(id) {
+  if (!confirm('Supprimer cet animal ?')) return;
+  await fetch('/api/pets/' + id, { method: 'DELETE' });
+  customerToast('Animal supprime');
+  openMyPets();
+}
+
+// Initialize auth UI on page load
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', renderAuthUI);
+} else {
+  renderAuthUI();
+}
